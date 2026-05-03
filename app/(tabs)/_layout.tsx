@@ -29,9 +29,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
+          title: 'Modules',
+          tabBarIcon: ({ color }) => <TabBarIcon name="book" color={color} />,
+          headerLeft: () => (
             <Link href="/modal" asChild>
               <Pressable>
                 {({ pressed }) => (
@@ -50,8 +50,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="two"
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: 'Profil',
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
     </Tabs>
