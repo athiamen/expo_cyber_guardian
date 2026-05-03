@@ -13,6 +13,10 @@ export const chatGuardianStyles = StyleSheet.create({
     gap: moderateScale(12),
     minHeight: verticalScale(420),
   },
+  chatGuardianBoardPhone: {
+    flexDirection: "column",
+    minHeight: verticalScale(520),
+  },
   chatGuardianContactsPanel: {
     flex: 0.36,
     borderRadius: scale(18),
@@ -21,6 +25,10 @@ export const chatGuardianStyles = StyleSheet.create({
     backgroundColor: colors.surfaceSoft,
     padding: moderateScale(14),
     gap: moderateScale(12),
+  },
+  chatGuardianContactsPanelPhone: {
+    flex: 0,
+    width: "100%",
   },
   chatGuardianPanelEyebrow: {
     color: colors.text,
@@ -46,6 +54,10 @@ export const chatGuardianStyles = StyleSheet.create({
     shadowRadius: 2,
     shadowOffset: { width: 0, height: 1 },
     elevation: 1,
+  },
+  chatGuardianContactRowPhone: {
+    minHeight: verticalScale(66),
+    padding: moderateScale(12),
   },
   chatGuardianContactRowActive: {
     borderColor: colors.accent,
@@ -122,19 +134,23 @@ export const chatGuardianStyles = StyleSheet.create({
     borderBottomColor: "rgba(148,163,184,0.35)",
     backgroundColor: colors.surface,
   },
+  chatGuardianHeaderPhone: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+  },
   chatGuardianHeaderTextWrap: {
     flex: 1,
     gap: 4,
   },
   chatGuardianHeadline: {
     color: colors.text,
-    fontSize: normalizeFont(16),
+    fontSize: normalizeFont(18),
     fontWeight: "800",
   },
   chatGuardianIntro: {
     color: colors.textMuted,
-    fontSize: normalizeFont(12),
-    lineHeight: verticalScale(18),
+    fontSize: normalizeFont(13),
+    lineHeight: verticalScale(20),
     fontWeight: "600",
   },
   chatGuardianThreatChip: {
@@ -188,8 +204,8 @@ export const chatGuardianStyles = StyleSheet.create({
   },
   chatGuardianMessageText: {
     color: "#0f172a",
-    fontSize: normalizeFont(14),
-    lineHeight: verticalScale(20),
+    fontSize: normalizeFont(15),
+    lineHeight: verticalScale(22),
     fontWeight: "600",
   },
   chatGuardianMessageTime: {
@@ -260,6 +276,12 @@ export const chatGuardianStyles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     elevation: 2,
   },
+  chatGuardianActionButtonPhone: {
+    flexBasis: "100%",
+    minWidth: "100%",
+    minHeight: verticalScale(78),
+    justifyContent: "center",
+  },
   chatGuardianActionButtonSelected: {
     borderColor: colors.accent,
     borderWidth: 3,
@@ -295,10 +317,10 @@ export const chatGuardianStyles = StyleSheet.create({
   },
   chatGuardianActionTitle: {
     color: "#1f2937",
-    fontSize: normalizeFont(13),
+    fontSize: normalizeFont(14),
     fontWeight: "800",
     textAlign: "center",
-    lineHeight: verticalScale(18),
+    lineHeight: verticalScale(20),
   },
   chatGuardianActionTitleSelected: {
     color: "#0369a1",
@@ -306,7 +328,7 @@ export const chatGuardianStyles = StyleSheet.create({
   },
   chatGuardianActionHint: {
     color: "#6b7280",
-    fontSize: normalizeFont(11),
+    fontSize: normalizeFont(12),
     fontWeight: "700",
     textAlign: "center",
   },

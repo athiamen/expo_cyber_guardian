@@ -2,20 +2,19 @@ import { useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-    ActivityIndicator,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput, useWindowDimensions, View
 } from "react-native";
 import { getApiBaseUrl, getProfileMe, updateProfileMe } from "../../../lib/api";
 import {
-    moderateScale,
-    normalizeFont,
-    scale,
-    verticalScale,
+  moderateScale,
+  normalizeFont,
+  scale,
+  verticalScale,
 } from "../../../lib/responsive";
 import { colors } from "../../../theme/colors";
 import { typography } from "../../../theme/typography";
@@ -28,6 +27,8 @@ export function EditProfileScreen({ token }: EditProfileScreenProps) {
   const { t } = useTranslation();
   const tEdit = (key: string) => t(`editProfile.${key}`);
   const router = useRouter();
+  const { width: screenWidth } = useWindowDimensions();
+  const isMobile = screenWidth < 420;
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
@@ -111,6 +112,8 @@ export function EditProfileScreen({ token }: EditProfileScreenProps) {
     }
   };
 
+  const styles = createStyles(isMobile);
+
   if (isLoading) {
     return (
       <View style={styles.loadingWrap}>
@@ -190,87 +193,91 @@ export function EditProfileScreen({ token }: EditProfileScreenProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.background,
-  },
-  content: {
-    paddingHorizontal: moderateScale(24),
-    paddingTop: moderateScale(24),
-    paddingBottom: moderateScale(36),
-    gap: moderateScale(14),
-  },
-  loadingWrap: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    gap: moderateScale(10),
-    backgroundColor: colors.background,
-  },
-  loadingText: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(13),
-    fontWeight: "700",
-  },
-  heroCard: {
-    borderRadius: scale(20),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: moderateScale(18),
-  },
-  title: {
-    marginTop: moderateScale(8),
-  },
-  body: {
-    marginTop: moderateScale(10),
-  },
-  formCard: {
-    borderRadius: scale(16),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: moderateScale(14),
-    gap: moderateScale(10),
-  },
-  label: {
-    color: colors.text,
-    fontSize: normalizeFont(13),
-    fontWeight: "700",
-    letterSpacing: moderateScale(0.3),
-  },
-  input: {
-    borderRadius: scale(12),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceSoft,
-    color: colors.text,
-    paddingHorizontal: moderateScale(12),
-    paddingVertical: moderateScale(11),
-    fontSize: normalizeFont(15),
-  },
-  readonlyInput: {
-    opacity: 0.65,
-  },
-  saveButton: {
-    marginTop: moderateScale(6),
-    borderRadius: scale(12),
-    backgroundColor: colors.accent,
-    paddingVertical: moderateScale(12),
-    alignItems: "center",
-  },
-  saveButtonDisabled: {
-    opacity: 0.45,
-  },
-  saveButtonText: {
-    color: colors.background,
-    fontSize: normalizeFont(14),
-    fontWeight: "800",
-    letterSpacing: moderateScale(0.2),
-  },
-  statusText: {
-    color: "#ffb9b9",
-    fontSize: normalizeFont(12),
-    lineHeight: verticalScale(18),
-  },
-});
+const createStyles = (isMobile: boolean) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: colors.background,
+    },
+    content: {
+      paddingHorizontal: moderateScale(isMobile ? 16 : 24),
+      paddingTop: moderateScale(16),
+      paddingBottom: moderateScale(24),
+      gap: moderateScale(isMobile ? 10 : 14),
+    },
+    loadingWrap: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      gap: moderateScale(10),
+      backgroundColor: colors.background,
+    },
+    loadingText: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(13),
+      fontWeight: "700",
+    },
+    heroCard: {
+      borderRadius: scale(20),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(isMobile ? 14 : 18),
+    },
+    title: {
+      marginTop: moderateScale(8),
+    },
+    body: {
+      marginTop: moderateScale(10),
+    },
+    formCard: {
+      borderRadius: scale(16),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(isMobile ? 12 : 14),
+      gap: moderateScale(isMobile ? 12 : 10),
+    },
+    label: {
+      color: colors.text,
+      fontSize: normalizeFont(isMobile ? 14 : 13),
+      fontWeight: "700",
+      letterSpacing: moderateScale(0.3),
+    },
+    input: {
+      borderRadius: scale(12),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surfaceSoft,
+      color: colors.text,
+      paddingHorizontal: moderateScale(12),
+      paddingVertical: moderateScale(isMobile ? 14 : 11),
+      fontSize: normalizeFont(isMobile ? 16 : 15),
+      minHeight: isMobile ? 52 : "auto",
+    },
+    readonlyInput: {
+      opacity: 0.65,
+    },
+    saveButton: {
+      marginTop: moderateScale(6),
+      borderRadius: scale(12),
+      backgroundColor: colors.accent,
+      paddingVertical: moderateScale(isMobile ? 16 : 12),
+      alignItems: "center",
+      minHeight: isMobile ? 52 : "auto",
+      justifyContent: "center",
+    },
+    saveButtonDisabled: {
+      opacity: 0.45,
+    },
+    saveButtonText: {
+      color: colors.background,
+      fontSize: normalizeFont(isMobile ? 16 : 14),
+      fontWeight: "800",
+      letterSpacing: moderateScale(0.2),
+    },
+    statusText: {
+      color: "#ffb9b9",
+      fontSize: normalizeFont(12),
+      lineHeight: verticalScale(18),
+    },
+  });

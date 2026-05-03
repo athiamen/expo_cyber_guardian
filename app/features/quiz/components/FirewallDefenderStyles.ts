@@ -33,9 +33,33 @@ export const firewallStyles = StyleSheet.create({
     gap: moderateScale(10),
     userSelect: "none",
   },
+  firewallTopbarCompact: {
+    flexDirection: "column",
+    alignItems: "stretch",
+    gap: moderateScale(12),
+    padding: moderateScale(12),
+  },
+  firewallStatsRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: moderateScale(10),
+    alignItems: "center",
+    flex: 1,
+  },
+  firewallStatsRowCompact: {
+    gap: moderateScale(12),
+  },
+  firewallActionsRow: {
+    flexDirection: "row",
+    gap: moderateScale(8),
+  },
+  firewallActionsRowCompact: {
+    justifyContent: "space-between",
+    gap: moderateScale(10),
+  },
   firewallStat: {
     color: colors.text,
-    fontSize: normalizeFont(13),
+    fontSize: normalizeFont(14),
     fontWeight: "700",
   },
   firewallShieldWrap: {
@@ -182,8 +206,8 @@ export const firewallStyles = StyleSheet.create({
   },
   firewallQuestionPrompt: {
     color: colors.text,
-    fontSize: normalizeFont(16),
-    lineHeight: verticalScale(22),
+    fontSize: normalizeFont(18),
+    lineHeight: verticalScale(25),
     fontWeight: "800",
   },
   firewallControlsRow: {
@@ -196,8 +220,10 @@ export const firewallStyles = StyleSheet.create({
     borderWidth: scale(1),
     borderColor: "#cbd5e1",
     backgroundColor: "#ffffff",
-    paddingHorizontal: moderateScale(12),
-    paddingVertical: moderateScale(9),
+    paddingHorizontal: moderateScale(14),
+    paddingVertical: moderateScale(11),
+    minHeight: verticalScale(44),
+    justifyContent: "center",
   },
   firewallControlPrimary: {
     borderColor: "#4f46e5",
@@ -205,12 +231,12 @@ export const firewallStyles = StyleSheet.create({
   },
   firewallControlText: {
     color: "#334155",
-    fontSize: normalizeFont(13),
+    fontSize: normalizeFont(14),
     fontWeight: "800",
   },
   firewallControlTextPrimary: {
     color: "#ffffff",
-    fontSize: normalizeFont(13),
+    fontSize: normalizeFont(14),
     fontWeight: "800",
   },
   firewallGameStateText: {
@@ -236,8 +262,8 @@ export const firewallStyles = StyleSheet.create({
     flexDirection: "row",
   },
   firewallTouchButton: {
-    width: scale(110),
-    height: verticalScale(46),
+    width: scale(124),
+    height: verticalScale(52),
     borderRadius: scale(12),
     borderWidth: scale(1),
     borderColor: colors.border,
@@ -253,7 +279,7 @@ export const firewallStyles = StyleSheet.create({
   },
   firewallTouchButtonText: {
     color: colors.text,
-    fontSize: normalizeFont(13),
+    fontSize: normalizeFont(14),
     fontWeight: "800",
   },
   firewallOptionsWrap: {
@@ -265,7 +291,9 @@ export const firewallStyles = StyleSheet.create({
     borderColor: "#94a3b8",
     backgroundColor: "#ffffff",
     paddingHorizontal: moderateScale(12),
-    paddingVertical: moderateScale(11),
+    paddingVertical: moderateScale(13),
+    minHeight: verticalScale(56),
+    justifyContent: "center",
   },
   firewallOptionButtonSelected: {
     borderColor: "#3b82f6",
@@ -281,9 +309,9 @@ export const firewallStyles = StyleSheet.create({
   },
   firewallOptionText: {
     color: "#1f2937",
-    fontSize: normalizeFont(15),
+    fontSize: normalizeFont(16),
     fontWeight: "700",
-    lineHeight: verticalScale(21),
+    lineHeight: verticalScale(24),
   },
   firewallSidePanel: {
     width: scale(550),

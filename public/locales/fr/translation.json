@@ -45,6 +45,13 @@
     "heroEyebrow": "ATELIER CYBER",
     "heroTitle": "Parcours de sensibilisation",
     "heroBody": "Continuez votre progression et validez vos acquis avec les quiz.",
+    "selectTitle": "Choisir un module",
+    "selectBody": "Sélectionnez un module pour afficher sa liste de cours.",
+    "selectLabel": "Modules disponibles",
+    "selectedModule": "Module sélectionné",
+    "moduleFallback": "Ce module contient des cours de sensibilisation prêts à être parcourus.",
+    "openModule": "Ouvrir",
+    "courseShort": "cours",
     "lessons": "Leçons",
     "quizzes": "Quiz",
     "progress": "Progression",
@@ -68,6 +75,18 @@
     "resumeQuiz": "Reprendre",
     "startQuiz": "Lancer"
   },
+  "module": {
+    "heroEyebrow": "MODULE",
+    "heroTitle": "Cours du module",
+    "heroBody": "Choisissez un cours pour ouvrir le parcours pédagogique.",
+    "loadError": "Chargement du module impossible.",
+    "notFound": "Module introuvable.",
+    "coursesTitle": "Cours disponibles",
+    "openCourse": "Ouvrir le cours",
+    "backToSelect": "Retour aux modules",
+    "quizzesTitle": "Quiz du module",
+    "openQuiz": "Lancer le quiz"
+  },
   "course": {
     "heroEyebrow": "COURS",
     "moduleLabel": "Module: {{moduleTitle}}",
@@ -88,6 +107,12 @@
     "objectiveUnavailable": "Objectif indisponible.",
     "timelineEyebrow": "PARCOURS DU COURS",
     "stepMeta": "Étape {{current}} sur {{total}}",
+    "stepObjective": "Objectif",
+    "stepIntroduction": "Introduction",
+    "stepTakeaway": "À retenir",
+    "objectivePageTitle": "Objectif du cours",
+    "completedTitle": "Cours terminé",
+    "completedSummary": "Vous avez parcouru l'objectif, l'introduction et les points essentiels de ce cours.",
     "completedEyebrow": "COURS TERMINÉ",
     "completedBody": "Vous avez parcouru toutes les étapes de {{courseTitle}}. Vous pouvez maintenant passer au quiz du module avec une base complète.",
     "review": "Revoir le cours",
@@ -97,6 +122,7 @@
     "previous": "Précédent",
     "finishCourse": "Terminer le cours",
     "nextStep": "Etape suivante",
+    "backToModule": "Retour au module",
     "startEyebrow": "DÉMARRAGE",
     "startBody": "Le cours n'a pas encore commencé. Appuyez sur le bouton ci-dessous pour lancer le parcours animé et suivre les étapes une à une.",
     "start": "Commencer le cours"
@@ -122,7 +148,7 @@
     "correctAnswerTitle": "Bonne réponse",
     "wrongAnswerTitle": "Mauvaise réponse",
     "chooseAnswer": "Choisissez une réponse",
-    "readExplanation": "Lisez l explication puis continuez",
+    "readExplanation": "Lisez l'explication puis continuez",
     "showResult": "Voir mon résultat",
     "nextQuestion": "Question suivante",
     "noQuestion": "Aucune question disponible pour ce quiz.",
@@ -134,11 +160,7 @@
       "title": "Quiz {{id}}",
       "module": "Générique",
       "prompt": "Ce quiz était absent. Une version par défaut a été créée.",
-      "options": [
-        "Continuer",
-        "Revenir plus tard",
-        "Demander une validation"
-      ]
+      "options": ["Continuer", "Revenir plus tard", "Demander une validation"]
     }
   },
   "profile": {
@@ -193,5 +215,15 @@
     "successes": "Nombre de réussites",
     "failures": "Nombre d'échecs",
     "successRate": "Taux de réussite"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "soundTitle": "Son",
+    "soundDescription": "Activer les effets sonores",
+    "themeTitle": "Thème",
+    "themeDescription": "Choisissez votre thème préféré",
+    "themeAuto": "Automatique",
+    "themeLight": "Clair",
+    "themeDark": "Sombre"
   }
 }

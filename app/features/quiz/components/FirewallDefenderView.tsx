@@ -1,8 +1,11 @@
-import { Pressable, Text, View } from 'react-native';
-import type { LayoutChangeEvent, PanResponderInstance } from 'react-native';
-import type { QuizDifficulty } from '../data/quizCatalogData';
-import { FIREWALL_LEVEL_LABELS, type FirewallMovingObject } from '../firewall/firewallGame';
-import { firewallStyles } from './FirewallDefenderView.styles';
+import type { LayoutChangeEvent, PanResponderInstance } from "react-native";
+import { Pressable, Text, View } from "react-native";
+import type { QuizDifficulty } from "../data/quizCatalogData";
+import {
+  FIREWALL_LEVEL_LABELS,
+  type FirewallMovingObject,
+} from "../firewall/firewallGame";
+import { firewallStyles } from "./FirewallDefenderStyles";
 
 type FirewallInventoryItem = {
   key: string;
@@ -24,7 +27,13 @@ type FirewallDefenderViewProps = {
   firewallArenaRef: React.RefObject<View | null>;
   firewallChestPanResponder: PanResponderInstance;
   onArenaLayout: (event: LayoutChangeEvent) => void;
-  firewallStars: Array<{ id: number; x: number; y: number; size: number; opacity: number }>;
+  firewallStars: Array<{
+    id: number;
+    x: number;
+    y: number;
+    size: number;
+    opacity: number;
+  }>;
   firewallPirateZone: { x: number; y: number; w: number; h: number };
   firewallObjects: FirewallMovingObject[];
   firewallChestLeft: number;
@@ -64,34 +73,103 @@ export function FirewallDefenderView({
   firewallInventory,
 }: FirewallDefenderViewProps) {
   return (
-    <View style={[firewallStyles.firewallBoard, isCompactLayout && firewallStyles.firewallBoardStacked]}>
+    <View
+      style={[
+        firewallStyles.firewallBoard,
+        isCompactLayout && firewallStyles.firewallBoardStacked,
+      ]}
+    >
       <View style={firewallStyles.firewallMainPanel}>
-        <View style={firewallStyles.firewallTopbar}>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, alignItems: 'center', flex: 1 }}>
-            <Text selectable={false} style={firewallStyles.firewallStat}>🏆 Score : {firewallScoreLabel}</Text>
-            <Text selectable={false} style={firewallStyles.firewallStat}>🔥 Série : {streak}</Text>
-            <Text selectable={false} style={firewallStyles.firewallStat}>❤️ Vies : {firewallLivesLabel}</Text>
+        <View
+          style={[
+            firewallStyles.firewallTopbar,
+            isCompactLayout && firewallStyles.firewallTopbarCompact,
+          ]}
+        >
+          <View
+            style={[
+              firewallStyles.firewallStatsRow,
+              isCompactLayout && firewallStyles.firewallStatsRowCompact,
+            ]}
+          >
+            <Text selectable={false} style={firewallStyles.firewallStat}>
+              🏆 Score : {firewallScoreLabel}
+            </Text>
+            <Text selectable={false} style={firewallStyles.firewallStat}>
+              🔥 Série : {streak}
+            </Text>
+            <Text selectable={false} style={firewallStyles.firewallStat}>
+              ❤️ Vies : {firewallLivesLabel}
+            </Text>
             <View style={firewallStyles.firewallShieldWrap}>
-              <Text selectable={false} style={firewallStyles.firewallStat}>🛡️ Bouclier :</Text>
+              <Text selectable={false} style={firewallStyles.firewallStat}>
+                🛡️ Bouclier :
+              </Text>
               <View style={firewallStyles.firewallShieldTrack}>
-                <View style={[firewallStyles.firewallShieldFill, { width: `${firewallShieldPct}%` }]} />
+                <View
+                  style={[
+                    firewallStyles.firewallShieldFill,
+                    { width: `${firewallShieldPct}%` },
+                  ]}
+                />
               </View>
-              <Text selectable={false} style={firewallStyles.firewallShieldText}>
-                {firewallShieldCountdown > 0 ? `${firewallShieldCountdown}s` : `${firewallShieldPct}%`}
+              <Text
+                selectable={false}
+                style={firewallStyles.firewallShieldText}
+              >
+                {firewallShieldCountdown > 0
+                  ? `${firewallShieldCountdown}s`
+                  : `${firewallShieldPct}%`}
               </Text>
             </View>
-            <Text selectable={false} style={firewallStyles.firewallStat}>⏱️ Temps : {timeLeft}s</Text>
-            <Text selectable={false} style={firewallStyles.firewallStat}>🏅 Difficulté : {FIREWALL_LEVEL_LABELS[selectedDifficulty]}</Text>
+            <Text selectable={false} style={firewallStyles.firewallStat}>
+              ⏱️ Temps : {timeLeft}s
+            </Text>
+            <Text selectable={false} style={firewallStyles.firewallStat}>
+              🏅 Difficulté : {FIREWALL_LEVEL_LABELS[selectedDifficulty]}
+            </Text>
           </View>
-          <View style={{ flexDirection: 'row', gap: 8 }}>
-            <Pressable style={[firewallStyles.firewallControlButton, firewallStyles.firewallControlPrimary]} onPress={onStartFirewallGame}>
-              <Text selectable={false} style={firewallStyles.firewallControlTextPrimary}>▶ Jouer</Text>
+          <View
+            style={[
+              firewallStyles.firewallActionsRow,
+              isCompactLayout && firewallStyles.firewallActionsRowCompact,
+            ]}
+          >
+            <Pressable
+              style={[
+                firewallStyles.firewallControlButton,
+                firewallStyles.firewallControlPrimary,
+              ]}
+              onPress={onStartFirewallGame}
+            >
+              <Text
+                selectable={false}
+                style={firewallStyles.firewallControlTextPrimary}
+              >
+                ▶ Jouer
+              </Text>
             </Pressable>
-            <Pressable style={firewallStyles.firewallControlButton} onPress={onToggleFirewallPause}>
-              <Text selectable={false} style={firewallStyles.firewallControlText}>{firewallGamePaused ? '▶ Reprendre' : '⏸ Pause'}</Text>
+            <Pressable
+              style={firewallStyles.firewallControlButton}
+              onPress={onToggleFirewallPause}
+            >
+              <Text
+                selectable={false}
+                style={firewallStyles.firewallControlText}
+              >
+                {firewallGamePaused ? "▶ Reprendre" : "⏸ Pause"}
+              </Text>
             </Pressable>
-            <Pressable style={firewallStyles.firewallControlButton} onPress={onResetFirewallGame}>
-              <Text selectable={false} style={firewallStyles.firewallControlText}>🔁 Recommencer</Text>
+            <Pressable
+              style={firewallStyles.firewallControlButton}
+              onPress={onResetFirewallGame}
+            >
+              <Text
+                selectable={false}
+                style={firewallStyles.firewallControlText}
+              >
+                🔁 Recommencer
+              </Text>
             </Pressable>
           </View>
         </View>
@@ -131,8 +209,12 @@ export function FirewallDefenderView({
               },
             ]}
           >
-            <Text selectable={false} style={firewallStyles.firewallPirateTitle}>👾 Pirate</Text>
-            <Text selectable={false} style={firewallStyles.firewallPirateText}>Récupère les données qui tombent ici !</Text>
+            <Text selectable={false} style={firewallStyles.firewallPirateTitle}>
+              👾 Pirate
+            </Text>
+            <Text selectable={false} style={firewallStyles.firewallPirateText}>
+              Récupère les données qui tombent ici !
+            </Text>
           </View>
 
           <View style={firewallStyles.firewallSafeMarker} />
@@ -142,9 +224,9 @@ export function FirewallDefenderView({
               key={object.id}
               style={[
                 firewallStyles.firewallBubble,
-                object.kind === 'bad'
+                object.kind === "bad"
                   ? firewallStyles.firewallThreatBubble
-                  : object.kind === 'power'
+                  : object.kind === "power"
                     ? firewallStyles.firewallPowerBubble
                     : firewallStyles.firewallDataBubble,
                 {
@@ -153,13 +235,27 @@ export function FirewallDefenderView({
                 },
               ]}
             >
-              <Text selectable={false} style={firewallStyles.firewallBubbleIcon}>{object.icon}</Text>
+              <Text
+                selectable={false}
+                style={firewallStyles.firewallBubbleIcon}
+              >
+                {object.icon}
+              </Text>
             </View>
           ))}
 
-          <View style={[firewallStyles.firewallCoffreCard, { left: firewallChestLeft }]}>
-            <Text selectable={false} style={firewallStyles.firewallCoffreTitle}>🔒 Coffre</Text>
-            <Text selectable={false} style={firewallStyles.firewallCoffreHint}>Déplace-moi</Text>
+          <View
+            style={[
+              firewallStyles.firewallCoffreCard,
+              { left: firewallChestLeft },
+            ]}
+          >
+            <Text selectable={false} style={firewallStyles.firewallCoffreTitle}>
+              🔒 Coffre
+            </Text>
+            <Text selectable={false} style={firewallStyles.firewallCoffreHint}>
+              Déplace-moi
+            </Text>
           </View>
         </View>
       </View>

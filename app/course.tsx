@@ -1,7 +1,7 @@
-import { useLocalSearchParams } from 'expo-router';
-import { CourseScreen } from './features/modules/screens/CourseScreen';
+import { useLocalSearchParams } from "expo-router";
+import { CourseJourneyScreen } from "./features/modules/screens/CourseJourneyScreen";
 
 export default function CourseRoute() {
-  const params = useLocalSearchParams<{ userId?: string }>();
-  return <CourseScreen userId={params.userId ?? 'anonymous'} />;
+  useLocalSearchParams<{ courseCode?: string }>();
+  return <CourseJourneyScreen />;
 }

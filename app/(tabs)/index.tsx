@@ -1,5 +1,5 @@
-import { ModulesScreen } from '../features/modules/screens/ModulesScreen';
+import { ModuleSelectScreen } from "../features/modules/screens/ModuleSelectScreen";
 
 export default function TabModulesScreen() {
-  return <ModulesScreen userId="anonymous" />;
+  return <ModuleSelectScreen />;
 }

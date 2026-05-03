@@ -1,9 +1,9 @@
 import { StyleSheet } from "react-native";
 import {
-    moderateScale,
-    normalizeFont,
-    scale,
-    verticalScale,
+  moderateScale,
+  normalizeFont,
+  scale,
+  verticalScale,
 } from "../../../lib/responsive";
 import { colors } from "../../../theme/colors";
 
@@ -88,7 +88,8 @@ export const quizClassicStyles = StyleSheet.create({
     borderColor: "#e5e7eb",
     backgroundColor: colors.surfaceSoft,
     paddingHorizontal: moderateScale(12),
-    paddingVertical: moderateScale(11),
+    paddingVertical: moderateScale(13),
+    minHeight: verticalScale(56),
     shadowColor: "#000",
     shadowOpacity: 0.05,
     shadowRadius: 2,
@@ -126,15 +127,15 @@ export const quizClassicStyles = StyleSheet.create({
     elevation: 6,
   },
   optionIndex: {
-    width: scale(24),
-    height: scale(24),
+    width: scale(30),
+    height: scale(30),
     borderRadius: scale(999),
     borderWidth: scale(2),
     borderColor: "#d1d5db",
     color: "#4b5563",
     textAlign: "center",
     textAlignVertical: "center",
-    fontSize: normalizeFont(12),
+    fontSize: normalizeFont(13),
     fontWeight: "800",
   },
   optionIndexSelected: {
@@ -158,8 +159,8 @@ export const quizClassicStyles = StyleSheet.create({
   optionText: {
     flex: 1,
     color: colors.text,
-    fontSize: normalizeFont(14),
-    lineHeight: verticalScale(19),
+    fontSize: normalizeFont(15),
+    lineHeight: verticalScale(22),
   },
   optionTextSelected: {
     color: "#ffffff",
@@ -186,14 +187,14 @@ export const quizClassicStyles = StyleSheet.create({
   },
   feedbackTitle: {
     color: "#ffffff",
-    fontSize: normalizeFont(13),
+    fontSize: normalizeFont(14),
     fontWeight: "800",
     letterSpacing: moderateScale(0.2),
   },
   feedbackBody: {
     color: "#e8f5e9",
-    fontSize: normalizeFont(13),
-    lineHeight: verticalScale(19),
+    fontSize: normalizeFont(14),
+    lineHeight: verticalScale(21),
   },
   timeWarningCard: {
     borderRadius: scale(10),

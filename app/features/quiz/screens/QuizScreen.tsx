@@ -1,13 +1,14 @@
 import { RouteProp, useRoute } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
-  Image,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { getApiBaseUrl, getQuizByCode } from "../../../lib/api";
@@ -32,6 +33,9 @@ type QuizScreenProps = {
 
 export function QuizScreen({ token, userId }: QuizScreenProps) {
   const { t } = useTranslation();
+  const router = useRouter();
+  const { width } = useWindowDimensions();
+  const isPhone = width < 420;
   const tQuiz = (key: string, options?: Record<string, unknown>) =>
     t(`quiz.${key}`, options);
 
@@ -101,62 +105,58 @@ export function QuizScreen({ token, userId }: QuizScreenProps) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.heroCard}>
-        <View style={styles.heroTopRow}>
-          <View style={styles.heroTextWrap}>
-            <Text style={typography.eyebrow}>{tQuiz("heroEyebrow")}</Text>
-            <Text style={[typography.screenTitle, styles.title]}>
-              {quizTitle}
-            </Text>
-            <Text style={[typography.body, styles.body]}>
-              {tQuiz("heroBody")}
-            </Text>
-            <View style={styles.difficultySelector}>
-              {(["easy", "medium", "hard"] as QuizDifficulty[]).map(
-                (difficulty) => {
-                  const isActive = selectedDifficulty === difficulty;
-                  const label =
-                    difficulty === "easy"
-                      ? "Débutant"
-                      : difficulty === "medium"
-                        ? "Intermediaire"
-                        : "Expert";
+      <Pressable style={styles.backButton} onPress={() => router.back()}>
+        <Text style={styles.backButtonText}>{t("course.previous")}</Text>
+      </Pressable>
 
-                  return (
-                    <Pressable
-                      key={difficulty}
+      <View style={styles.heroCard}>
+        <View style={styles.heroTextWrap}>
+          <Text style={[typography.screenTitle, styles.title]}>
+            {quizTitle}
+          </Text>
+          <View
+            style={[
+              styles.difficultySelector,
+              isPhone && styles.difficultySelectorPhone,
+            ]}
+          >
+            {(["easy", "medium", "hard"] as QuizDifficulty[]).map(
+              (difficulty) => {
+                const isActive = selectedDifficulty === difficulty;
+                const label =
+                  difficulty === "easy"
+                    ? "Facile"
+                    : difficulty === "medium"
+                      ? "Moyen"
+                      : "Difficile";
+
+                return (
+                  <Pressable
+                    key={difficulty}
+                    style={[
+                      styles.difficultyButton,
+                      isPhone && styles.difficultyButtonPhone,
+                      isActive && styles.difficultyButtonActive,
+                    ]}
+                    onPress={() => setSelectedDifficulty(difficulty)}
+                  >
+                    <Text
                       style={[
-                        styles.difficultyButton,
-                        isActive && styles.difficultyButtonActive,
+                        styles.difficultyButtonText,
+                        isPhone && styles.difficultyButtonTextPhone,
+                        isActive && styles.difficultyButtonTextActive,
                       ]}
-                      onPress={() => setSelectedDifficulty(difficulty)}
                     >
-                      <Text
-                        style={[
-                          styles.difficultyButtonText,
-                          isActive && styles.difficultyButtonTextActive,
-                        ]}
-                      >
-                        {label}
-                      </Text>
-                    </Pressable>
-                  );
-                },
-              )}
-            </View>
-            <View style={styles.quizContextChip}>
-              <Text style={styles.quizContextText}>
-                {quizTitle} • {requestedQuizId}
-              </Text>
-            </View>
-            {errorMessage ? (
-              <Text style={styles.warningText}>{errorMessage}</Text>
-            ) : null}
+                      {label}
+                    </Text>
+                  </Pressable>
+                );
+              },
+            )}
           </View>
-          <Image
-            source={require("../../../../assets/images/cyber_guardian.png")}
-            style={styles.heroImage}
-          />
+          {errorMessage ? (
+            <Text style={styles.warningText}>{errorMessage}</Text>
+          ) : null}
         </View>
       </View>
 
@@ -190,9 +190,9 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: moderateScale(24),
-    paddingTop: moderateScale(24),
+    paddingTop: moderateScale(16),
     paddingBottom: moderateScale(36),
-    gap: moderateScale(14),
+    gap: moderateScale(10),
   },
   loadingWrap: {
     flex: 1,
@@ -206,99 +206,89 @@ const styles = StyleSheet.create({
     fontSize: normalizeFont(13),
     fontWeight: "700",
   },
-  heroCard: {
-    borderRadius: scale(20),
+  backButton: {
+    alignSelf: "flex-start",
+    borderRadius: scale(999),
     borderWidth: scale(1),
     borderColor: colors.border,
     backgroundColor: colors.surface,
-    padding: moderateScale(18),
+    paddingHorizontal: moderateScale(12),
+    paddingVertical: moderateScale(6),
   },
-  heroTopRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    gap: moderateScale(14),
+  backButtonText: {
+    color: colors.text,
+    fontSize: normalizeFont(11),
+    fontWeight: "800",
+    textTransform: "uppercase",
+    letterSpacing: moderateScale(0.6),
+  },
+  heroCard: {
+    borderRadius: scale(14),
+    borderWidth: scale(1),
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    paddingHorizontal: moderateScale(12),
+    paddingVertical: moderateScale(10),
   },
   heroTextWrap: {
     flex: 1,
   },
   title: {
-    marginTop: moderateScale(8),
-  },
-  body: {
-    marginTop: moderateScale(10),
-    maxWidth: scale(320),
+    marginTop: 0,
+    fontSize: normalizeFont(24),
+    lineHeight: verticalScale(30),
   },
   difficultySelector: {
     flexDirection: "row",
     flexWrap: "nowrap",
-    gap: moderateScale(8),
-    marginTop: moderateScale(12),
+    gap: moderateScale(6),
+    marginTop: moderateScale(8),
     width: "100%",
+  },
+  difficultySelectorPhone: {
+    flexWrap: "wrap",
+    gap: moderateScale(10),
   },
   difficultyButton: {
     flex: 1,
     borderRadius: 999,
-    borderWidth: scale(2),
+    borderWidth: scale(1),
     borderColor: "#d1d5db",
     backgroundColor: colors.surfaceSoft,
-    paddingHorizontal: moderateScale(8),
-    paddingVertical: moderateScale(8),
+    paddingHorizontal: moderateScale(6),
+    paddingVertical: moderateScale(6),
+    minHeight: verticalScale(36),
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    shadowOffset: { width: 0, height: 1 },
-    elevation: 2,
+    justifyContent: "center",
+  },
+  difficultyButtonPhone: {
+    minHeight: verticalScale(38),
+    justifyContent: "center",
+    paddingHorizontal: moderateScale(8),
   },
   difficultyButtonActive: {
     backgroundColor: colors.accent,
     borderColor: colors.accent,
-    borderWidth: 3,
-    shadowColor: colors.accent,
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 6,
+    borderWidth: scale(2),
   },
   difficultyButtonText: {
     color: colors.text,
-    fontSize: normalizeFont(11),
+    fontSize: normalizeFont(10),
     fontWeight: "800",
-    letterSpacing: moderateScale(0.5),
+    letterSpacing: moderateScale(0.2),
     textTransform: "uppercase",
+  },
+  difficultyButtonTextPhone: {
+    fontSize: normalizeFont(11),
   },
   difficultyButtonTextActive: {
     color: colors.surface,
     fontWeight: "900",
   },
-  heroImage: {
-    width: scale(220),
-    maxWidth: "42%",
-    height: verticalScale(160),
-    borderRadius: scale(12),
-    resizeMode: "cover",
-  },
-  quizContextChip: {
-    marginTop: moderateScale(10),
-    alignSelf: "flex-start",
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceSoft,
-    paddingHorizontal: moderateScale(10),
-    paddingVertical: moderateScale(6),
-  },
-  quizContextText: {
-    color: colors.text,
-    fontSize: normalizeFont(12),
-    fontWeight: "700",
-    letterSpacing: moderateScale(0.2),
-  },
   warningText: {
-    marginTop: moderateScale(8),
+    marginTop: moderateScale(6),
     color: "#ffb9b9",
-    fontSize: normalizeFont(12),
-    lineHeight: verticalScale(18),
+    fontSize: normalizeFont(11),
+    lineHeight: verticalScale(16),
   },
 });

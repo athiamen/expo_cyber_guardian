@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Switch,
   Text,
+  useWindowDimensions,
   View,
 } from "react-native";
 import {
@@ -40,6 +41,8 @@ export function ProfileScreen({ token, userId, onLogout }: ProfileScreenProps) {
   const tProfile = (key: string, options?: Record<string, unknown>) =>
     t(`profile.${key}`, options);
   const router = useRouter();
+  const { width: screenWidth } = useWindowDimensions();
+  const isMobile = screenWidth < 420;
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [weeklyRecap, setWeeklyRecap] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -178,6 +181,8 @@ export function ProfileScreen({ token, userId, onLogout }: ProfileScreenProps) {
       .map((part) => part[0]?.toUpperCase() ?? "")
       .join("");
   }, [profile?.fullName]);
+
+  const styles = createStyles(isMobile);
 
   if (isLoading) {
     return (
@@ -326,184 +331,190 @@ export function ProfileScreen({ token, userId, onLogout }: ProfileScreenProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.background,
-  },
-  content: {
-    paddingHorizontal: moderateScale(24),
-    paddingTop: moderateScale(24),
-    paddingBottom: moderateScale(36),
-    gap: moderateScale(14),
-  },
-  loadingWrap: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    gap: moderateScale(10),
-    backgroundColor: colors.background,
-  },
-  loadingText: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(13),
-    fontWeight: "700",
-  },
-  heroCard: {
-    borderRadius: scale(20),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: moderateScale(18),
-  },
-  heroTopRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    gap: moderateScale(14),
-  },
-  heroTextWrap: {
-    flex: 1,
-  },
-  heroTitle: {
-    marginTop: 8,
-  },
-  heroBody: {
-    marginTop: moderateScale(10),
-    maxWidth: scale(320),
-  },
-  heroImage: {
-    width: scale(220),
-    maxWidth: "42%",
-    height: verticalScale(160),
-    borderRadius: scale(14),
-    resizeMode: "cover",
-  },
-  errorText: {
-    color: "#ffb9b9",
-    fontSize: normalizeFont(12),
-    lineHeight: verticalScale(18),
-  },
-  identityCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: moderateScale(12),
-    borderRadius: scale(16),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: moderateScale(14),
-  },
-  avatar: {
-    width: scale(56),
-    height: scale(56),
-    borderRadius: scale(999),
-    backgroundColor: colors.surfaceSoft,
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  avatarText: {
-    color: colors.accent,
-    fontSize: normalizeFont(20),
-    fontWeight: "900",
-    letterSpacing: moderateScale(0.2),
-  },
-  identityTextWrap: {
-    flex: 1,
-    gap: moderateScale(2),
-  },
-  name: {
-    color: colors.text,
-    fontSize: normalizeFont(17),
-    fontWeight: "800",
-  },
-  email: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(13),
-    fontWeight: "500",
-  },
-  role: {
-    color: colors.warning,
-    fontSize: normalizeFont(12),
-    fontWeight: "700",
-    letterSpacing: moderateScale(0.2),
-  },
-  statsRow: {
-    flexDirection: "row",
-    gap: moderateScale(10),
-  },
-  statCard: {
-    flex: 1,
-    borderRadius: scale(14),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceSoft,
-    padding: moderateScale(12),
-  },
-  statLabel: {
-    marginTop: moderateScale(6),
-  },
-  preferencesCard: {
-    borderRadius: scale(16),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: moderateScale(14),
-    gap: moderateScale(12),
-  },
-  sectionTitle: {
-    marginBottom: 2,
-  },
-  preferenceRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    gap: moderateScale(10),
-  },
-  preferenceTextWrap: {
-    flex: 1,
-    gap: moderateScale(3),
-  },
-  preferenceTitle: {
-    color: colors.text,
-    fontSize: normalizeFont(14),
-    fontWeight: "700",
-  },
-  preferenceMeta: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(12),
-    lineHeight: verticalScale(17),
-  },
-  actionsCard: {
-    borderRadius: scale(16),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: moderateScale(14),
-    gap: moderateScale(10),
-  },
-  actionButton: {
-    borderRadius: scale(11),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceSoft,
-    paddingVertical: moderateScale(12),
-    paddingHorizontal: moderateScale(12),
-  },
-  actionText: {
-    color: colors.text,
-    fontSize: normalizeFont(14),
-    fontWeight: "700",
-  },
-  actionDanger: {
-    borderColor: "#7a2a2a",
-    backgroundColor: "#3f1d1d",
-  },
-  actionDangerText: {
-    color: "#ffb9b9",
-    fontSize: normalizeFont(14),
-    fontWeight: "800",
-    textAlign: "center",
-  },
-});
+const createStyles = (isMobile: boolean) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: colors.background,
+    },
+    content: {
+      paddingHorizontal: moderateScale(isMobile ? 16 : 24),
+      paddingTop: moderateScale(16),
+      paddingBottom: moderateScale(24),
+      gap: moderateScale(isMobile ? 10 : 14),
+    },
+    loadingWrap: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      gap: moderateScale(10),
+      backgroundColor: colors.background,
+    },
+    loadingText: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(13),
+      fontWeight: "700",
+    },
+    heroCard: {
+      borderRadius: scale(20),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(isMobile ? 14 : 18),
+    },
+    heroTopRow: {
+      flexDirection: isMobile ? "column" : "row",
+      justifyContent: "space-between",
+      alignItems: "flex-start",
+      gap: moderateScale(isMobile ? 10 : 14),
+    },
+    heroTextWrap: {
+      flex: 1,
+    },
+    heroTitle: {
+      marginTop: 8,
+    },
+    heroBody: {
+      marginTop: moderateScale(10),
+      maxWidth: scale(320),
+    },
+    heroImage: {
+      width: isMobile ? scale(160) : scale(220),
+      maxWidth: isMobile ? "100%" : "42%",
+      height: isMobile ? verticalScale(120) : verticalScale(160),
+      borderRadius: scale(14),
+      resizeMode: "cover",
+    },
+    errorText: {
+      color: "#ffb9b9",
+      fontSize: normalizeFont(12),
+      lineHeight: verticalScale(18),
+    },
+    identityCard: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: moderateScale(12),
+      borderRadius: scale(16),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(14),
+    },
+    avatar: {
+      width: isMobile ? scale(64) : scale(56),
+      height: isMobile ? scale(64) : scale(56),
+      borderRadius: scale(999),
+      backgroundColor: colors.surfaceSoft,
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    avatarText: {
+      color: colors.accent,
+      fontSize: normalizeFont(isMobile ? 24 : 20),
+      fontWeight: "900",
+      letterSpacing: moderateScale(0.2),
+    },
+    identityTextWrap: {
+      flex: 1,
+      gap: moderateScale(2),
+    },
+    name: {
+      color: colors.text,
+      fontSize: normalizeFont(isMobile ? 18 : 17),
+      fontWeight: "800",
+    },
+    email: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(isMobile ? 14 : 13),
+      fontWeight: "500",
+    },
+    role: {
+      color: colors.warning,
+      fontSize: normalizeFont(isMobile ? 13 : 12),
+      fontWeight: "700",
+      letterSpacing: moderateScale(0.2),
+    },
+    statsRow: {
+      flexDirection: isMobile ? "column" : "row",
+      gap: moderateScale(isMobile ? 8 : 10),
+    },
+    statCard: {
+      flex: 1,
+      borderRadius: scale(14),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surfaceSoft,
+      padding: moderateScale(isMobile ? 14 : 12),
+      minHeight: isMobile ? verticalScale(80) : "auto",
+      justifyContent: "center",
+    },
+    statLabel: {
+      marginTop: moderateScale(6),
+    },
+    preferencesCard: {
+      borderRadius: scale(16),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(14),
+      gap: moderateScale(12),
+    },
+    sectionTitle: {
+      marginBottom: 2,
+    },
+    preferenceRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      gap: moderateScale(10),
+    },
+    preferenceTextWrap: {
+      flex: 1,
+      gap: moderateScale(3),
+    },
+    preferenceTitle: {
+      color: colors.text,
+      fontSize: normalizeFont(isMobile ? 15 : 14),
+      fontWeight: "700",
+    },
+    preferenceMeta: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(isMobile ? 13 : 12),
+      lineHeight: verticalScale(17),
+    },
+    actionsCard: {
+      borderRadius: scale(16),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(isMobile ? 12 : 14),
+      gap: moderateScale(isMobile ? 12 : 10),
+    },
+    actionButton: {
+      borderRadius: scale(11),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surfaceSoft,
+      paddingVertical: moderateScale(isMobile ? 16 : 12),
+      paddingHorizontal: moderateScale(12),
+      minHeight: isMobile ? 52 : "auto",
+      justifyContent: "center",
+    },
+    actionText: {
+      color: colors.text,
+      fontSize: normalizeFont(isMobile ? 16 : 14),
+      fontWeight: "700",
+      textAlign: "center",
+    },
+    actionDanger: {
+      borderColor: "#7a2a2a",
+      backgroundColor: "#3f1d1d",
+    },
+    actionDangerText: {
+      color: "#ffb9b9",
+      fontSize: normalizeFont(isMobile ? 16 : 14),
+      fontWeight: "800",
+      textAlign: "center",
+    },
+  });

@@ -56,8 +56,13 @@ function RootLayoutNav() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen name="précedent" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+        <Stack.Screen
+          name="modal"
+          options={{
+            presentation: "modal",
+            headerBackButtonDisplayMode: "minimal",
+          }}
+        />
       </Stack>
     </ThemeProvider>
   );

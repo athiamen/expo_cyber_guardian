@@ -1,8 +1,12 @@
-import { useEffect, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
-import { CHAT_GUARDIAN_ACTIONS, CHAT_GUARDIAN_CONTACTS, type ChatGuardianScenario } from '../data/chatGuardianData';
-import type { QuizQuestion } from '../data/quizCatalog';
-import { chatGuardianStyles } from './ChatGuardianView.styles';
+import { useEffect, useState } from "react";
+import { Pressable, Text, useWindowDimensions, View } from "react-native";
+import {
+  CHAT_GUARDIAN_ACTIONS,
+  CHAT_GUARDIAN_CONTACTS,
+  type ChatGuardianScenario,
+} from "../data/chatGuardianData";
+import type { QuizQuestion } from "../data/quizCatalog";
+import { chatGuardianStyles } from "./ChatGuardianView.styles";
 
 type ChatGuardianViewProps = {
   currentScenario: ChatGuardianScenario;
@@ -32,14 +36,19 @@ const TypingDot = ({ delay }: { delay: number }) => {
   const [opacity, setOpacity] = useState(0.5);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setOpacity((prev) => (prev === 0.5 ? 1 : 0.5));
-    }, 600 + delay * 200);
+    const timer = setInterval(
+      () => {
+        setOpacity((prev) => (prev === 0.5 ? 1 : 0.5));
+      },
+      600 + delay * 200,
+    );
 
     return () => clearInterval(timer);
   }, [delay]);
 
-  return <View style={[chatGuardianStyles.chatGuardianTypingDot, { opacity }]} />;
+  return (
+    <View style={[chatGuardianStyles.chatGuardianTypingDot, { opacity }]} />
+  );
 };
 
 const TypingIndicator = () => {
@@ -64,34 +73,61 @@ export function ChatGuardianView({
   onSelectOption,
   onNextQuestion,
   tQuiz,
-    styles,
+  styles,
 }: ChatGuardianViewProps) {
+  const { width } = useWindowDimensions();
+  const isPhone = width < 420;
+
   return (
-    <View style={chatGuardianStyles.chatGuardianBoard}>
-      <View style={chatGuardianStyles.chatGuardianContactsPanel}>
-        <Text style={chatGuardianStyles.chatGuardianPanelEyebrow}>Contacts actifs</Text>
+    <View
+      style={[
+        chatGuardianStyles.chatGuardianBoard,
+        isPhone && chatGuardianStyles.chatGuardianBoardPhone,
+      ]}
+    >
+      <View
+        style={[
+          chatGuardianStyles.chatGuardianContactsPanel,
+          isPhone && chatGuardianStyles.chatGuardianContactsPanelPhone,
+        ]}
+      >
+        <Text style={chatGuardianStyles.chatGuardianPanelEyebrow}>
+          Contacts actifs
+        </Text>
         <View style={chatGuardianStyles.chatGuardianContactsList}>
           {CHAT_GUARDIAN_CONTACTS.map((contact) => {
-            const isActiveContact = contact.name === currentScenario.contactName;
+            const isActiveContact =
+              contact.name === currentScenario.contactName;
             return (
               <Pressable
                 key={contact.name}
                 onPress={() => onSelectContact(contact.name)}
-                style={[chatGuardianStyles.chatGuardianContactRow, isActiveContact && chatGuardianStyles.chatGuardianContactRowActive]}
+                style={[
+                  chatGuardianStyles.chatGuardianContactRow,
+                  isPhone && chatGuardianStyles.chatGuardianContactRowPhone,
+                  isActiveContact &&
+                    chatGuardianStyles.chatGuardianContactRowActive,
+                ]}
               >
                 <View style={chatGuardianStyles.chatGuardianContactAvatarWrap}>
-                  <Text style={chatGuardianStyles.chatGuardianContactAvatar}>{contact.emoji}</Text>
+                  <Text style={chatGuardianStyles.chatGuardianContactAvatar}>
+                    {contact.emoji}
+                  </Text>
                 </View>
                 <View style={chatGuardianStyles.chatGuardianContactTextWrap}>
-                  <Text style={chatGuardianStyles.chatGuardianContactName}>{contact.name}</Text>
-                  <Text style={chatGuardianStyles.chatGuardianContactSubtitle}>{contact.subtitle}</Text>
+                  <Text style={chatGuardianStyles.chatGuardianContactName}>
+                    {contact.name}
+                  </Text>
+                  <Text style={chatGuardianStyles.chatGuardianContactSubtitle}>
+                    {contact.subtitle}
+                  </Text>
                 </View>
                 <View
                   style={[
                     chatGuardianStyles.chatGuardianThreatDot,
-                    contact.threat === 'safe'
+                    contact.threat === "safe"
                       ? chatGuardianStyles.chatGuardianThreatSafe
-                      : contact.threat === 'warning'
+                      : contact.threat === "warning"
                         ? chatGuardianStyles.chatGuardianThreatWarning
                         : chatGuardianStyles.chatGuardianThreatDanger,
                   ]}
@@ -103,14 +139,27 @@ export function ChatGuardianView({
       </View>
 
       <View style={chatGuardianStyles.chatGuardianChatPanel}>
-        <View style={chatGuardianStyles.chatGuardianHeader}>
+        <View
+          style={[
+            chatGuardianStyles.chatGuardianHeader,
+            isPhone && chatGuardianStyles.chatGuardianHeaderPhone,
+          ]}
+        >
           <View style={chatGuardianStyles.chatGuardianHeaderTextWrap}>
-            <Text style={chatGuardianStyles.chatGuardianContactName}>{currentScenario.contactName}</Text>
-            <Text style={chatGuardianStyles.chatGuardianHeadline}>{currentScenario.headline}</Text>
-            <Text style={chatGuardianStyles.chatGuardianIntro}>{currentScenario.intro}</Text>
+            <Text style={chatGuardianStyles.chatGuardianContactName}>
+              {currentScenario.contactName}
+            </Text>
+            <Text style={chatGuardianStyles.chatGuardianHeadline}>
+              {currentScenario.headline}
+            </Text>
+            <Text style={chatGuardianStyles.chatGuardianIntro}>
+              {currentScenario.intro}
+            </Text>
           </View>
           <View style={chatGuardianStyles.chatGuardianThreatChip}>
-            <Text style={chatGuardianStyles.chatGuardianThreatChipText}>{currentScenario.flags.length} alertes</Text>
+            <Text style={chatGuardianStyles.chatGuardianThreatChipText}>
+              {currentScenario.flags.length} alertes
+            </Text>
           </View>
         </View>
 
@@ -123,35 +172,59 @@ export function ChatGuardianView({
             }
 
             return (
-              <View key={`${message.sender}-${messageIndex}`} style={[chatGuardianStyles.chatGuardianMessageBubble, chatGuardianStyles.chatGuardianMessageIncoming]}>
-                <Text style={chatGuardianStyles.chatGuardianMessageSender}>{message.sender}</Text>
-                <Text style={chatGuardianStyles.chatGuardianMessageText}>{message.text}</Text>
-                <Text style={chatGuardianStyles.chatGuardianMessageTime}>{message.time}</Text>
+              <View
+                key={`${message.sender}-${messageIndex}`}
+                style={[
+                  chatGuardianStyles.chatGuardianMessageBubble,
+                  chatGuardianStyles.chatGuardianMessageIncoming,
+                ]}
+              >
+                <Text style={chatGuardianStyles.chatGuardianMessageSender}>
+                  {message.sender}
+                </Text>
+                <Text style={chatGuardianStyles.chatGuardianMessageText}>
+                  {message.text}
+                </Text>
+                <Text style={chatGuardianStyles.chatGuardianMessageTime}>
+                  {message.time}
+                </Text>
               </View>
             );
           })}
-          {typingMessageIndex < currentScenario.messages.length && selectedForCurrent === undefined ? (
+          {typingMessageIndex < currentScenario.messages.length &&
+          selectedForCurrent === undefined ? (
             <TypingIndicator />
           ) : null}
         </View>
 
         <View style={chatGuardianStyles.chatGuardianAlertBox}>
-          <Text style={chatGuardianStyles.chatGuardianAlertTitle}>Signaux d alerte</Text>
+          <Text style={chatGuardianStyles.chatGuardianAlertTitle}>
+            Signaux d alerte
+          </Text>
           <View style={chatGuardianStyles.chatGuardianAlertList}>
             {currentScenario.flags.map((flag) => (
-              <Text key={flag} style={chatGuardianStyles.chatGuardianAlertItem}>• {flag}</Text>
+              <Text key={flag} style={chatGuardianStyles.chatGuardianAlertItem}>
+                • {flag}
+              </Text>
             ))}
           </View>
         </View>
 
-        <Text style={chatGuardianStyles.chatGuardianActionPrompt}>Choisis la meilleure réaction</Text>
+        <Text style={chatGuardianStyles.chatGuardianActionPrompt}>
+          Choisis la meilleure réaction
+        </Text>
 
         <View style={chatGuardianStyles.chatGuardianActions}>
           {currentQuestion.options.map((option, optionIndex) => {
             const isSelected = selectedForCurrent === optionIndex;
-            const isCorrectOption = currentQuestion.correctIndex === optionIndex;
-            const showCorrectOption = selectedForCurrent !== undefined && isCorrectOption;
-            const showWrongSelected = selectedForCurrent !== undefined && isSelected && !isCorrectOption;
+            const isCorrectOption =
+              currentQuestion.correctIndex === optionIndex;
+            const showCorrectOption =
+              selectedForCurrent !== undefined && isCorrectOption;
+            const showWrongSelected =
+              selectedForCurrent !== undefined &&
+              isSelected &&
+              !isCorrectOption;
             const actionMeta = CHAT_GUARDIAN_ACTIONS[optionIndex];
 
             return (
@@ -160,37 +233,70 @@ export function ChatGuardianView({
                 onPress={() => onSelectOption(optionIndex)}
                 style={[
                   chatGuardianStyles.chatGuardianActionButton,
-                  isSelected && chatGuardianStyles.chatGuardianActionButtonSelected,
-                  showCorrectOption && chatGuardianStyles.chatGuardianActionButtonCorrect,
-                  showWrongSelected && chatGuardianStyles.chatGuardianActionButtonWrong,
+                  isPhone && chatGuardianStyles.chatGuardianActionButtonPhone,
+                  isSelected &&
+                    chatGuardianStyles.chatGuardianActionButtonSelected,
+                  showCorrectOption &&
+                    chatGuardianStyles.chatGuardianActionButtonCorrect,
+                  showWrongSelected &&
+                    chatGuardianStyles.chatGuardianActionButtonWrong,
                 ]}
                 disabled={selectedForCurrent !== undefined}
               >
-                <Text style={chatGuardianStyles.chatGuardianActionIcon}>{actionMeta?.icon ?? '•'}</Text>
-                <Text style={[chatGuardianStyles.chatGuardianActionTitle, isSelected && chatGuardianStyles.chatGuardianActionTitleSelected]}>{option}</Text>
-                <Text style={[chatGuardianStyles.chatGuardianActionHint, isSelected && chatGuardianStyles.chatGuardianActionHintSelected]}>{actionMeta?.hint ?? ''}</Text>
+                <Text style={chatGuardianStyles.chatGuardianActionIcon}>
+                  {actionMeta?.icon ?? "•"}
+                </Text>
+                <Text
+                  style={[
+                    chatGuardianStyles.chatGuardianActionTitle,
+                    isSelected &&
+                      chatGuardianStyles.chatGuardianActionTitleSelected,
+                  ]}
+                >
+                  {option}
+                </Text>
+                <Text
+                  style={[
+                    chatGuardianStyles.chatGuardianActionHint,
+                    isSelected &&
+                      chatGuardianStyles.chatGuardianActionHintSelected,
+                  ]}
+                >
+                  {actionMeta?.hint ?? ""}
+                </Text>
               </Pressable>
             );
           })}
         </View>
 
         {currentExplanation ? (
-          <View style={[styles.feedbackCard, isCurrentAnswerCorrect ? styles.feedbackCardSuccess : styles.feedbackCardError]}>
+          <View
+            style={[
+              styles.feedbackCard,
+              isCurrentAnswerCorrect
+                ? styles.feedbackCardSuccess
+                : styles.feedbackCardError,
+            ]}
+          >
             <Text style={styles.feedbackTitle}>
-              {isCurrentAnswerCorrect ? tQuiz('correctAnswerTitle') : tQuiz('wrongAnswerTitle')}
+              {isCurrentAnswerCorrect
+                ? tQuiz("correctAnswerTitle")
+                : tQuiz("wrongAnswerTitle")}
             </Text>
             <Text style={styles.feedbackBody}>{currentExplanation}</Text>
           </View>
         ) : null}
 
         <Text style={styles.autoNextLabel}>
-          {selectedForCurrent === undefined ? tQuiz('chooseAnswer') : tQuiz('readExplanation')}
+          {selectedForCurrent === undefined
+            ? tQuiz("chooseAnswer")
+            : tQuiz("readExplanation")}
         </Text>
 
         {selectedForCurrent !== undefined ? (
           <Pressable onPress={onNextQuestion} style={styles.primaryButton}>
             <Text style={styles.primaryButtonText}>
-              {isLastQuestion ? tQuiz('showResult') : tQuiz('nextQuestion')}
+              {isLastQuestion ? tQuiz("showResult") : tQuiz("nextQuestion")}
             </Text>
           </Pressable>
         ) : null}
