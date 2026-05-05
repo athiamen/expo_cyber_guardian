@@ -400,8 +400,8 @@ const createStyles = (isMobile: boolean) =>
       padding: moderateScale(14),
     },
     avatar: {
-      width: isMobile ? scale(64) : scale(56),
-      height: isMobile ? scale(64) : scale(56),
+      width: scale(56),
+      height: scale(56),
       borderRadius: scale(999),
       backgroundColor: colors.surfaceSoft,
       borderWidth: scale(1),
@@ -411,7 +411,7 @@ const createStyles = (isMobile: boolean) =>
     },
     avatarText: {
       color: colors.accent,
-      fontSize: normalizeFont(isMobile ? 24 : 20),
+      fontSize: normalizeFont(20),
       fontWeight: "900",
       letterSpacing: moderateScale(0.2),
     },
@@ -475,12 +475,12 @@ const createStyles = (isMobile: boolean) =>
     },
     preferenceTitle: {
       color: colors.text,
-      fontSize: normalizeFont(isMobile ? 15 : 14),
+      fontSize: normalizeFont(14),
       fontWeight: "700",
     },
     preferenceMeta: {
       color: colors.textMuted,
-      fontSize: normalizeFont(isMobile ? 13 : 12),
+      fontSize: normalizeFont(12),
       lineHeight: verticalScale(17),
     },
     actionsCard: {
@@ -488,8 +488,8 @@ const createStyles = (isMobile: boolean) =>
       borderWidth: scale(1),
       borderColor: colors.border,
       backgroundColor: colors.surface,
-      padding: moderateScale(isMobile ? 12 : 14),
-      gap: moderateScale(isMobile ? 12 : 10),
+      padding: moderateScale(14),
+      gap: moderateScale(10),
     },
     actionButton: {
       borderRadius: scale(11),
