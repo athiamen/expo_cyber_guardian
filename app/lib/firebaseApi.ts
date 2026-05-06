@@ -1,13 +1,13 @@
 import {
-    collection,
-    doc,
-    getDoc,
-    getDocs,
-    query,
-    setDoc,
-    Timestamp,
-    updateDoc,
-    where,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  Timestamp,
+  updateDoc,
+  where,
 } from "firebase/firestore";
 import { db } from "./firebase";
 
@@ -175,6 +175,21 @@ export async function markCourseCompleted(uid: string, courseCode: string) {
     });
   } catch (error: any) {
     console.warn("Failed to mark course as completed:", error);
+  }
+}
+
+export async function markQuizCompleted(uid: string, quizCode: string) {
+  try {
+    const progressRef = doc(db, "users", uid, "progress", "quizzes");
+    const progressSnap = await getDoc(progressRef);
+    const currentProgress = progressSnap.data() || {};
+
+    await setDoc(progressRef, {
+      ...currentProgress,
+      [quizCode]: { completedAt: Timestamp.now() },
+    });
+  } catch (error: any) {
+    console.warn("Failed to mark quiz as completed:", error);
   }
 }
 

@@ -83,7 +83,6 @@
     "notFound": "Module introuvable.",
     "coursesTitle": "Cours disponibles",
     "openCourse": "Ouvrir le cours",
-    "backToSelect": "Retour aux modules",
     "quizzesTitle": "Quiz du module",
     "openQuiz": "Lancer le quiz"
   },
@@ -121,7 +120,7 @@
     "takeaway": "À retenir",
     "previous": "Précédent",
     "finishCourse": "Terminer le cours",
-    "nextStep": "Etape suivante",
+    "nextStep": "Étape suivante",
     "backToModule": "Retour au module",
     "startEyebrow": "DÉMARRAGE",
     "startBody": "Le cours n'a pas encore commencé. Appuyez sur le bouton ci-dessous pour lancer le parcours animé et suivre les étapes une à une.",
@@ -153,7 +152,7 @@
     "nextQuestion": "Question suivante",
     "noQuestion": "Aucune question disponible pour ce quiz.",
     "answerExplanation": {
-      "correct": "Bonne réponse. \"{{correctOption}}\" est correcte car elle correspond au bon reflexe de cybersecurité attendu pour cette situation.",
+      "correct": "Bonne réponse. \"{{correctOption}}\" est correcte car elle correspond au bon réflexe de cybersécurité attendu pour cette situation.",
       "wrong": "Mauvaise réponse. \"{{selectedOption}}\" n'est pas la bonne action ici. La bonne réponse est \"{{correctOption}}\" car c'est le comportement le plus sûr dans ce contexte."
     },
     "fallback": {

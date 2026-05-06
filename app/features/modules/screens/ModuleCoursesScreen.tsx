@@ -3,21 +3,22 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-    ActivityIndicator,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import { getApiBaseUrl, getModules, ModuleItem } from "../../../lib/api";
 import { getLearningProgress } from "../../../lib/learningProgress";
 import {
-    moderateScale,
-    normalizeFont,
-    scale,
-    verticalScale,
+  moderateScale,
+  normalizeFont,
+  scale,
+  verticalScale,
 } from "../../../lib/responsive";
+import { loadSession } from "../../../lib/sessionStorage";
 import { colors } from "../../../theme/colors";
 import { typography } from "../../../theme/typography";
 
@@ -46,6 +47,10 @@ export function ModuleCoursesScreen() {
   );
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [sessionUserId, setSessionUserId] = useState("anonymous");
+  const [sessionToken, setSessionToken] = useState<string | undefined>(
+    undefined,
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -87,14 +92,27 @@ export function ModuleCoursesScreen() {
     useCallback(() => {
       let isMounted = true;
 
-      getLearningProgress("anonymous").then((progress) => {
+      async function hydrateLearningProgress() {
+        const session = await loadSession();
+        const scopedUserId = session?.user?.id ?? "anonymous";
+
+        if (!isMounted) {
+          return;
+        }
+
+        setSessionUserId(scopedUserId);
+        setSessionToken(session?.token);
+
+        const progress = await getLearningProgress(scopedUserId);
         if (!isMounted) {
           return;
         }
 
         setReadCourseCodes(progress.readCourseCodes);
         setCompletedCourseCodes(progress.completedCourseCodes);
-      });
+      }
+
+      void hydrateLearningProgress();
 
       return () => {
         isMounted = false;
@@ -121,6 +139,8 @@ export function ModuleCoursesScreen() {
         courseCode: course.code,
         courseTitle: course.title,
         moduleTitle: selectedModule.title,
+        userId: sessionUserId,
+        moduleCode: selectedModule.code,
       },
     });
   };
@@ -131,7 +151,8 @@ export function ModuleCoursesScreen() {
       params: {
         quizId: quiz.code,
         quizTitle: quiz.title,
-        userId: "anonymous",
+        userId: sessionUserId,
+        token: sessionToken,
       },
     });
   };
@@ -161,9 +182,10 @@ export function ModuleCoursesScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Pressable style={styles.backButton} onPress={() => router.back()}>
-        <Text style={styles.backButtonText}>{tModule("backToSelect")}</Text>
-      </Pressable>
+      <View pointerEvents="none" style={styles.ambientBackground}>
+        <View style={styles.ambientBlobLarge} />
+        <View style={styles.ambientBlobSmall} />
+      </View>
 
       <View style={styles.heroCard}>
         <Text style={typography.eyebrowWarning}>{tModule("heroEyebrow")}</Text>
@@ -270,22 +292,53 @@ export function ModuleCoursesScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.background,
+    backgroundColor: "#f1f5ff",
   },
   content: {
+    position: "relative",
     paddingHorizontal: moderateScale(24),
     paddingTop: moderateScale(24),
     paddingBottom: moderateScale(36),
     gap: moderateScale(16),
   },
+  ambientBackground: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: verticalScale(220),
+  },
+  ambientBlobLarge: {
+    position: "absolute",
+    top: verticalScale(-72),
+    right: scale(-44),
+    width: scale(220),
+    height: scale(220),
+    borderRadius: scale(999),
+    backgroundColor: "rgba(79, 140, 255, 0.16)",
+  },
+  ambientBlobSmall: {
+    position: "absolute",
+    top: verticalScale(18),
+    left: scale(-56),
+    width: scale(136),
+    height: scale(136),
+    borderRadius: scale(999),
+    backgroundColor: "rgba(245, 158, 11, 0.12)",
+  },
   backButton: {
     alignSelf: "flex-start",
     borderRadius: scale(999),
     borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
+    borderColor: "#8cb0ec",
+    backgroundColor: "#ffffff",
     paddingHorizontal: moderateScale(14),
     paddingVertical: moderateScale(8),
+    shadowColor: "#173465",
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 5 },
+    elevation: 2,
   },
   backButtonText: {
     color: colors.text,
@@ -295,11 +348,16 @@ const styles = StyleSheet.create({
     letterSpacing: moderateScale(0.8),
   },
   heroCard: {
-    borderRadius: scale(20),
+    borderRadius: scale(24),
     borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: moderateScale(18),
+    borderColor: "#86a6dd",
+    backgroundColor: "#f9fbff",
+    padding: moderateScale(20),
+    shadowColor: "#14356f",
+    shadowOpacity: 0.14,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 6,
   },
   title: {
     marginTop: moderateScale(8),
@@ -308,10 +366,10 @@ const styles = StyleSheet.create({
     marginTop: moderateScale(10),
   },
   stateCard: {
-    borderRadius: scale(16),
+    borderRadius: scale(18),
     borderWidth: scale(1),
     borderColor: colors.border,
-    backgroundColor: colors.surfaceSoft,
+    backgroundColor: "#ffffff",
     padding: moderateScale(16),
     alignItems: "center",
     gap: moderateScale(8),
@@ -351,12 +409,17 @@ const styles = StyleSheet.create({
     letterSpacing: moderateScale(0.8),
   },
   courseCard: {
-    borderRadius: scale(18),
+    borderRadius: scale(20),
     borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
+    borderColor: "#8cb0ec",
+    backgroundColor: "#ffffff",
     padding: moderateScale(16),
     gap: moderateScale(14),
+    shadowColor: "#173465",
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 7 },
+    elevation: 3,
   },
   courseInfo: {
     gap: moderateScale(6),
@@ -379,9 +442,9 @@ const styles = StyleSheet.create({
   },
   courseButton: {
     alignSelf: "flex-start",
-    borderRadius: scale(999),
+    borderRadius: scale(12),
     backgroundColor: colors.accent,
-    paddingHorizontal: moderateScale(16),
+    paddingHorizontal: moderateScale(18),
     paddingVertical: moderateScale(10),
   },
   courseButtonText: {
@@ -392,12 +455,17 @@ const styles = StyleSheet.create({
     letterSpacing: moderateScale(0.8),
   },
   quizCard: {
-    borderRadius: scale(18),
+    borderRadius: scale(20),
     borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
+    borderColor: "#8cb0ec",
+    backgroundColor: "#ffffff",
     padding: moderateScale(16),
     gap: moderateScale(14),
+    shadowColor: "#173465",
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 7 },
+    elevation: 3,
   },
   quizInfo: {
     gap: moderateScale(6),
@@ -405,8 +473,8 @@ const styles = StyleSheet.create({
   quizLockedHintCard: {
     borderRadius: scale(12),
     borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceSoft,
+    borderColor: "#b6cdf7",
+    backgroundColor: "#edf3ff",
     paddingHorizontal: moderateScale(12),
     paddingVertical: moderateScale(10),
   },
@@ -428,9 +496,9 @@ const styles = StyleSheet.create({
   },
   quizButton: {
     alignSelf: "flex-start",
-    borderRadius: scale(999),
+    borderRadius: scale(12),
     backgroundColor: colors.accent,
-    paddingHorizontal: moderateScale(16),
+    paddingHorizontal: moderateScale(18),
     paddingVertical: moderateScale(10),
   },
   quizButtonDisabled: {

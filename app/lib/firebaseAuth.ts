@@ -1,9 +1,9 @@
 import {
-    createUserWithEmailAndPassword,
-    onAuthStateChanged,
-    signInWithEmailAndPassword,
-    signOut,
-    User,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+  User,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db } from "./firebase";
@@ -56,7 +56,23 @@ export async function loginWithEmail(
     const uid = userCredential.user.uid;
 
     // Récupérer profil depuis Firestore
-    const userDoc = await getDoc(doc(db, "users", uid));
+    const userRef = doc(db, "users", uid);
+    const userDoc = await getDoc(userRef);
+
+    if (!userDoc.exists()) {
+      // Create a minimal profile if missing
+      const profile = {
+        uid,
+        email,
+        fullName: "",
+        role: "user",
+        organization: "",
+        createdAt: new Date().toISOString(),
+      };
+      await setDoc(userRef, profile);
+      return { uid, email: userCredential.user.email, fullName: "" };
+    }
+
     const userData = userDoc.data();
 
     return {
@@ -81,7 +97,28 @@ export function onAuthChange(callback: (user: AuthUser | null) => void) {
   return onAuthStateChanged(auth, async (firebaseUser) => {
     if (firebaseUser) {
       // Récupérer profil complet depuis Firestore
-      const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
+      const userRef = doc(db, "users", firebaseUser.uid);
+      const userDoc = await getDoc(userRef);
+
+      if (!userDoc.exists()) {
+        // ensure minimal profile exists
+        const profile = {
+          uid: firebaseUser.uid,
+          email: firebaseUser.email || null,
+          fullName: "",
+          role: "user",
+          organization: "",
+          createdAt: new Date().toISOString(),
+        };
+        await setDoc(userRef, profile);
+        callback({
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          fullName: "",
+        });
+        return;
+      }
+
       const userData = userDoc.data();
 
       callback({

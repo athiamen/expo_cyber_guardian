@@ -1,27 +1,25 @@
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useWindowDimensions } from 'react-native';
 import { useTranslation } from "react-i18next";
 import {
-    ActivityIndicator,
-    Animated,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  Animated,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text, useWindowDimensions, View
 } from "react-native";
 import { getApiBaseUrl, getCourseByCode, getModules } from "../../../lib/api";
 import {
-    markCourseCompleted,
-    markCourseRead,
+  markCourseCompleted,
+  markCourseRead,
 } from "../../../lib/learningProgress";
 import {
-    moderateScale,
-    normalizeFont,
-    scale,
-    verticalScale,
+  moderateScale,
+  normalizeFont,
+  scale,
+  verticalScale,
 } from "../../../lib/responsive";
 import { ModulesStackParamList } from "../../../navigation/types";
 import { colors } from "../../../theme/colors";
@@ -441,7 +439,12 @@ export function CourseScreen({ userId }: CourseScreenProps) {
                     <Text style={styles.developmentLabel}>
                       {tCourse("development")}
                     </Text>
-                    <View style={[styles.developmentList, isNarrow && { width: '100%' }]}>
+                    <View
+                      style={[
+                        styles.developmentList,
+                        isNarrow && { width: "100%" },
+                      ]}
+                    >
                       {activeSection.development.map((paragraph) => (
                         <Text key={paragraph} style={styles.developmentBody}>
                           {paragraph}
@@ -454,7 +457,12 @@ export function CourseScreen({ userId }: CourseScreenProps) {
                     <Text style={styles.keyPointLabel}>
                       {tCourse("takeaway")}
                     </Text>
-                    <View style={[styles.takeawayList, isNarrow && { width: '100%' }]}>
+                    <View
+                      style={[
+                        styles.takeawayList,
+                        isNarrow && { width: "100%" },
+                      ]}
+                    >
                       {activeSection.takeaway.map((item) => (
                         <View key={item} style={styles.takeawayItem}>
                           <View style={styles.takeawayBullet} />

@@ -2,23 +2,21 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-    ActivityIndicator,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
-import { getApiBaseUrl, getCourseByCode } from "../../../lib/api";
+import { getApiBaseUrl, getCourseByCode, getModules } from "../../../lib/api";
+import { markCourseCompleted } from "../../../lib/learningProgress";
 import {
-    markCourseCompleted,
-    markCourseRead,
-} from "../../../lib/learningProgress";
-import {
-    moderateScale,
-    normalizeFont,
-    scale,
-    verticalScale,
+  moderateScale,
+  normalizeFont,
+  scale,
+  verticalScale,
 } from "../../../lib/responsive";
 import { colors } from "../../../theme/colors";
 import { typography } from "../../../theme/typography";
@@ -29,6 +27,7 @@ type CourseJourneyParams = {
   courseTitle?: string;
   moduleTitle?: string;
   userId?: string;
+  moduleCode?: string;
 };
 
 type CourseData = {
@@ -40,13 +39,16 @@ type CourseData = {
 export function CourseJourneyScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { courseCode, courseTitle, moduleTitle, userId } =
+  const { courseCode, courseTitle, moduleTitle, userId, moduleCode } =
     useLocalSearchParams<CourseJourneyParams>();
   const [courseData, setCourseData] = useState<CourseData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [stepIndex, setStepIndex] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [moduleCourses, setModuleCourses] = useState<
+    Array<{ code: string; title: string }>
+  >([]);
 
   const userScope = userId ?? "anonymous";
 
@@ -114,12 +116,79 @@ export function CourseJourneyScreen() {
   }, [courseCode, courseTitle, moduleTitle, t]);
 
   useEffect(() => {
-    if (!courseCode || isLoading) {
+    let isMounted = true;
+
+    async function loadModuleCourses() {
+      if (!moduleCode && !moduleTitle) {
+        return;
+      }
+
+      try {
+        const modules = await getModules();
+        if (!isMounted) {
+          return;
+        }
+
+        // Find the current module and extract its courses
+        const currentModule = modules.find(
+          (m) => m.code === moduleCode || m.title === moduleTitle,
+        );
+
+        if (currentModule) {
+          setModuleCourses(
+            currentModule.courses.map((c) => ({
+              code: c.code,
+              title: c.title,
+            })),
+          );
+        }
+      } catch (error) {
+        // Silently fail - it's not critical for course viewing
+        console.error("Failed to load module courses:", error);
+      }
+    }
+
+    loadModuleCourses();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [moduleCode, moduleTitle]);
+
+  const goToNextCourse = () => {
+    const currentCourseIndex = moduleCourses.findIndex(
+      (c) => c.code === courseCode,
+    );
+
+    if (
+      currentCourseIndex === -1 ||
+      currentCourseIndex >= moduleCourses.length - 1
+    ) {
+      // No next course, go back to module
+      router.back();
       return;
     }
 
-    void markCourseRead(courseCode, userScope);
-  }, [courseCode, isLoading, userScope]);
+    const nextCourse = moduleCourses[currentCourseIndex + 1];
+
+    // Reset state and navigate to next course
+    setCourseData(null);
+    setIsLoading(true);
+    setErrorMessage(null);
+    setStepIndex(0);
+    setIsCompleted(false);
+
+    router.push({
+      pathname: "/course",
+      params: {
+        courseCode: nextCourse.code,
+        courseTitle: nextCourse.title,
+        moduleTitle: moduleTitle,
+        userId: userScope,
+        moduleCode: moduleCode,
+      },
+    });
+  };
 
   const pages = useMemo(() => {
     if (!courseData || !journeyContent) {
@@ -170,6 +239,21 @@ export function CourseJourneyScreen() {
     setStepIndex((current) => Math.max(current - 1, 0));
   };
 
+  const nextCourseCode = useMemo(() => {
+    const currentCourseIndex = moduleCourses.findIndex(
+      (c) => c.code === courseCode,
+    );
+
+    if (
+      currentCourseIndex === -1 ||
+      currentCourseIndex >= moduleCourses.length - 1
+    ) {
+      return null;
+    }
+
+    return moduleCourses[currentCourseIndex + 1]?.code;
+  }, [moduleCourses, courseCode]);
+
   if (isLoading) {
     return (
       <View style={styles.loadingWrap}>
@@ -199,10 +283,6 @@ export function CourseJourneyScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Pressable style={styles.backButton} onPress={() => router.back()}>
-        <Text style={styles.backButtonText}>{t("course.previous")}</Text>
-      </Pressable>
-
       <View style={styles.heroCard}>
         <Text style={typography.eyebrow}>{t("course.heroEyebrow")}</Text>
         <Text style={[typography.screenTitle, styles.title]}>
@@ -295,9 +375,25 @@ export function CourseJourneyScreen() {
           <Text style={styles.completionText}>
             {t("course.completedSummary")}
           </Text>
+
+          <View style={styles.completionImageBlock}>
+            <Image
+              source={require("../../../../assets/images/cyber_guardian.png")}
+              style={styles.completionImage}
+              resizeMode="contain"
+            />
+          </View>
+
           <Pressable style={styles.primaryButton} onPress={() => router.back()}>
             <Text style={styles.primaryButtonText}>
               {t("course.backToModule")}
+            </Text>
+          </Pressable>
+          <Pressable style={styles.primaryButton} onPress={goToNextCourse}>
+            <Text style={styles.primaryButtonText}>
+              {nextCourseCode
+                ? t("course.nextCourse", { code: nextCourseCode })
+                : t("course.finishCourse")}
             </Text>
           </Pressable>
         </View>
@@ -493,5 +589,18 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     fontSize: normalizeFont(14),
     lineHeight: verticalScale(22),
+  },
+  completionImageBlock: {
+    borderRadius: scale(16),
+    borderWidth: scale(1),
+    borderColor: colors.border,
+    backgroundColor: colors.surfaceSoft,
+    padding: moderateScale(16),
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  completionImage: {
+    width: scale(120),
+    height: scale(120),
   },
 });

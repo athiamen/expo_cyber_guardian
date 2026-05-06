@@ -195,6 +195,11 @@ export function ProfileScreen({ token, userId, onLogout }: ProfileScreenProps) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <View pointerEvents="none" style={styles.ambientBackground}>
+        <View style={styles.ambientBlobLarge} />
+        <View style={styles.ambientBlobSmall} />
+      </View>
+
       <View style={styles.heroCard}>
         <View style={styles.heroTopRow}>
           <View style={styles.heroTextWrap}>
@@ -207,11 +212,24 @@ export function ProfileScreen({ token, userId, onLogout }: ProfileScreenProps) {
             <Text style={[typography.body, styles.heroBody]}>
               {tProfile("heroBody")}
             </Text>
+
+            <View style={styles.heroStatsRow}>
+              <View style={styles.heroStatPill}>
+                <Text style={styles.heroStatValue}>{progression}%</Text>
+                <Text style={styles.heroStatLabel}>{tProfile("progress")}</Text>
+              </View>
+              <View style={styles.heroStatPill}>
+                <Text style={styles.heroStatValue}>{modules.length}</Text>
+                <Text style={styles.heroStatLabel}>Modules</Text>
+              </View>
+            </View>
           </View>
-          <Image
-            source={require("../../../../assets/images/cyber_guardian.png")}
-            style={styles.heroImage}
-          />
+          <View style={styles.heroImageCard}>
+            <Image
+              source={require("../../../../assets/images/cyber_guardian.png")}
+              style={styles.heroImage}
+            />
+          </View>
         </View>
       </View>
 
@@ -334,13 +352,39 @@ export function ProfileScreen({ token, userId, onLogout }: ProfileScreenProps) {
 const createStyles = (isMobile: boolean) =>
   StyleSheet.create({
     container: {
-      backgroundColor: colors.background,
+      backgroundColor: "#f1f5ff",
     },
     content: {
+      position: "relative",
       paddingHorizontal: moderateScale(isMobile ? 16 : 24),
       paddingTop: moderateScale(16),
       paddingBottom: moderateScale(24),
       gap: moderateScale(isMobile ? 10 : 14),
+    },
+    ambientBackground: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      height: verticalScale(220),
+    },
+    ambientBlobLarge: {
+      position: "absolute",
+      top: verticalScale(-70),
+      right: scale(-56),
+      width: scale(220),
+      height: scale(220),
+      borderRadius: scale(999),
+      backgroundColor: "rgba(79, 140, 255, 0.16)",
+    },
+    ambientBlobSmall: {
+      position: "absolute",
+      top: verticalScale(24),
+      left: scale(-52),
+      width: scale(130),
+      height: scale(130),
+      borderRadius: scale(999),
+      backgroundColor: "rgba(245, 158, 11, 0.12)",
     },
     loadingWrap: {
       flex: 1,
@@ -355,11 +399,16 @@ const createStyles = (isMobile: boolean) =>
       fontWeight: "700",
     },
     heroCard: {
-      borderRadius: scale(20),
+      borderRadius: scale(24),
       borderWidth: scale(1),
-      borderColor: colors.border,
-      backgroundColor: colors.surface,
+      borderColor: "#86a6dd",
+      backgroundColor: "#f9fbff",
       padding: moderateScale(isMobile ? 14 : 18),
+      shadowColor: "#14356f",
+      shadowOpacity: 0.14,
+      shadowRadius: 18,
+      shadowOffset: { width: 0, height: 12 },
+      elevation: 6,
     },
     heroTopRow: {
       flexDirection: isMobile ? "column" : "row",
@@ -377,12 +426,45 @@ const createStyles = (isMobile: boolean) =>
       marginTop: moderateScale(10),
       maxWidth: scale(320),
     },
+    heroStatsRow: {
+      marginTop: moderateScale(14),
+      flexDirection: "row",
+      gap: moderateScale(8),
+    },
+    heroStatPill: {
+      borderRadius: scale(12),
+      borderWidth: scale(1),
+      borderColor: "#bcd2f6",
+      backgroundColor: "#ffffff",
+      paddingVertical: moderateScale(8),
+      paddingHorizontal: moderateScale(10),
+      alignItems: "center",
+      minWidth: scale(86),
+    },
+    heroStatValue: {
+      color: colors.text,
+      fontSize: normalizeFont(16),
+      fontWeight: "900",
+    },
+    heroStatLabel: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(10),
+      fontWeight: "700",
+      letterSpacing: moderateScale(0.8),
+      textTransform: "uppercase",
+    },
+    heroImageCard: {
+      borderRadius: scale(16),
+      borderWidth: scale(1),
+      borderColor: "#b6cdf7",
+      backgroundColor: "#ffffff",
+      padding: moderateScale(10),
+    },
     heroImage: {
-      width: isMobile ? scale(160) : scale(220),
-      maxWidth: isMobile ? "100%" : "42%",
-      height: isMobile ? verticalScale(120) : verticalScale(160),
-      borderRadius: scale(14),
+      width: scale(160),
+      height: verticalScale(110),
       resizeMode: "cover",
+      borderRadius: scale(10),
     },
     errorText: {
       color: "#ffb9b9",
@@ -393,11 +475,16 @@ const createStyles = (isMobile: boolean) =>
       flexDirection: "row",
       alignItems: "center",
       gap: moderateScale(12),
-      borderRadius: scale(16),
+      borderRadius: scale(18),
       borderWidth: scale(1),
-      borderColor: colors.border,
-      backgroundColor: colors.surface,
+      borderColor: "#8cb0ec",
+      backgroundColor: "#ffffff",
       padding: moderateScale(14),
+      shadowColor: "#173465",
+      shadowOpacity: 0.1,
+      shadowRadius: 10,
+      shadowOffset: { width: 0, height: 7 },
+      elevation: 3,
     },
     avatar: {
       width: scale(56),
@@ -441,24 +528,34 @@ const createStyles = (isMobile: boolean) =>
     },
     statCard: {
       flex: 1,
-      borderRadius: scale(14),
+      borderRadius: scale(16),
       borderWidth: scale(1),
-      borderColor: colors.border,
-      backgroundColor: colors.surfaceSoft,
+      borderColor: "#8cb0ec",
+      backgroundColor: "#ffffff",
       padding: moderateScale(isMobile ? 14 : 12),
       minHeight: isMobile ? verticalScale(80) : "auto",
       justifyContent: "center",
+      shadowColor: "#173465",
+      shadowOpacity: 0.08,
+      shadowRadius: 8,
+      shadowOffset: { width: 0, height: 5 },
+      elevation: 2,
     },
     statLabel: {
       marginTop: moderateScale(6),
     },
     preferencesCard: {
-      borderRadius: scale(16),
+      borderRadius: scale(18),
       borderWidth: scale(1),
-      borderColor: colors.border,
-      backgroundColor: colors.surface,
+      borderColor: "#8cb0ec",
+      backgroundColor: "#ffffff",
       padding: moderateScale(14),
       gap: moderateScale(12),
+      shadowColor: "#173465",
+      shadowOpacity: 0.08,
+      shadowRadius: 8,
+      shadowOffset: { width: 0, height: 5 },
+      elevation: 2,
     },
     sectionTitle: {
       marginBottom: 2,
@@ -484,18 +581,23 @@ const createStyles = (isMobile: boolean) =>
       lineHeight: verticalScale(17),
     },
     actionsCard: {
-      borderRadius: scale(16),
+      borderRadius: scale(18),
       borderWidth: scale(1),
-      borderColor: colors.border,
-      backgroundColor: colors.surface,
+      borderColor: "#8cb0ec",
+      backgroundColor: "#ffffff",
       padding: moderateScale(14),
       gap: moderateScale(10),
+      shadowColor: "#173465",
+      shadowOpacity: 0.08,
+      shadowRadius: 8,
+      shadowOffset: { width: 0, height: 5 },
+      elevation: 2,
     },
     actionButton: {
-      borderRadius: scale(11),
+      borderRadius: scale(12),
       borderWidth: scale(1),
-      borderColor: colors.border,
-      backgroundColor: colors.surfaceSoft,
+      borderColor: "#b6cdf7",
+      backgroundColor: "#edf3ff",
       paddingVertical: moderateScale(isMobile ? 16 : 12),
       paddingHorizontal: moderateScale(12),
       minHeight: isMobile ? 52 : "auto",

@@ -1,3 +1,4 @@
+import { AuthSession, getApiBaseUrl, login, register } from "@/app/lib/api";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -10,7 +11,6 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { AuthSession, getApiBaseUrl, login, register } from "../../../lib/api";
 import {
   moderateScale,
   normalizeFont,
