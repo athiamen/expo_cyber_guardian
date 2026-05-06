@@ -17,11 +17,12 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const themeKey = (colorScheme ?? "light") as keyof typeof Colors;
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: Colors[themeKey].tint,
         headerTitleAlign: "center",
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
@@ -40,13 +41,20 @@ export default function TabLayout() {
                   <FontAwesome
                     name="cog"
                     size={25}
-                    color={Colors[colorScheme ?? "light"].text}
+                    color={Colors[themeKey].text}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                   />
                 )}
               </Pressable>
             </Link>
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="videos"
+        options={{
+          title: "Vidéos",
+          tabBarIcon: ({ color }) => <TabBarIcon name="play" color={color} />,
         }}
       />
       <Tabs.Screen

@@ -7,8 +7,7 @@ import {
   scale,
   verticalScale,
 } from "../../../lib/responsive";
-import { colors } from "../../../theme/colors";
-import { typography } from "../../../theme/typography";
+import { useAppTheme } from "../../../theme/useAppTheme";
 import { QuizClassicView } from "../components/QuizClassicView";
 import { LEVEL_LABELS, QUESTION_EVENTS } from "../constants/quizGameConstants";
 import { getOrCreateQuiz } from "../data/quizCatalog";
@@ -47,6 +46,9 @@ export function ClassicQuizScreen({
     selectedDifficulty,
     "classic",
   );
+
+  const { colors, typography } = useAppTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   // Use custom hooks for state management
   const quizCore = useQuizCore(quizDefinition, userId);
@@ -200,122 +202,122 @@ export function ClassicQuizScreen({
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  statsBar: {
-    borderRadius: scale(16),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    paddingHorizontal: moderateScale(14),
-    paddingVertical: moderateScale(12),
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    gap: moderateScale(10),
-  },
-  statItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: moderateScale(8),
-  },
-  statIcon: {
-    fontSize: normalizeFont(17),
-  },
-  statText: {
-    color: colors.text,
-    fontSize: normalizeFont(16),
-    fontWeight: "700",
-  },
-  statValueInline: {
-    color: colors.text,
-    fontWeight: "900",
-  },
-  progressTrack: {
-    height: verticalScale(8),
-    overflow: "hidden",
-    borderRadius: scale(999),
-    backgroundColor: colors.surfaceSoft,
-  },
-  progressFill: {
-    height: "100%",
-    borderRadius: scale(999),
-    backgroundColor: colors.accent,
-  },
-  progressLabel: {
-    marginTop: moderateScale(-2),
-  },
-  questionIndexLabel: {
-    color: colors.text,
-    fontSize: normalizeFont(16),
-    fontWeight: "700",
-    textAlign: "center",
-    marginTop: moderateScale(6),
-  },
-  questionCard: {
-    borderRadius: scale(16),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: moderateScale(14),
-    gap: moderateScale(12),
-  },
-  warningText: {
-    marginTop: moderateScale(8),
-    color: "#ffb9b9",
-    fontSize: normalizeFont(12),
-    lineHeight: verticalScale(18),
-  },
-  timeWarningCard: {
-    borderRadius: scale(10),
-    borderWidth: scale(2),
-    borderColor: "#fbbf24",
-    backgroundColor: "#78350f",
-    paddingHorizontal: moderateScale(10),
-    paddingVertical: moderateScale(8),
-    shadowColor: "#fbbf24",
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
-  },
-  timeWarningText: {
-    color: "#fef3c7",
-    fontSize: normalizeFont(12),
-    fontWeight: "800",
-    lineHeight: verticalScale(18),
-  },
-  resultValue: {
-    color: colors.accent,
-    fontSize: normalizeFont(40),
-    fontWeight: "900",
-    letterSpacing: -0.6,
-  },
-  resultBody: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(15),
-    lineHeight: verticalScale(21),
-  },
-  syncStatus: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(12),
-    lineHeight: verticalScale(18),
-  },
-  primaryButton: {
-    borderRadius: scale(12),
-    backgroundColor: colors.accent,
-    paddingVertical: moderateScale(12),
-    alignItems: "center",
-    shadowColor: colors.accent,
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 4,
-  },
-  primaryButtonText: {
-    color: colors.background,
-    fontSize: normalizeFont(15),
-    fontWeight: "800",
-    letterSpacing: moderateScale(0.2),
-  },
-});
+const createStyles = (colors: ReturnType<typeof useAppTheme>["colors"]) =>
+  StyleSheet.create({
+    statsBar: {
+      borderRadius: scale(16),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      paddingHorizontal: moderateScale(14),
+      paddingVertical: moderateScale(12),
+      flexDirection: "row",
+      flexWrap: "wrap",
+      justifyContent: "space-between",
+      gap: moderateScale(10),
+    },
+    statItem: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: moderateScale(8),
+    },
+    statIcon: {
+      fontSize: normalizeFont(17),
+    },
+    statText: {
+      color: colors.text,
+      fontSize: normalizeFont(16),
+      fontWeight: "700",
+    },
+    statValueInline: {
+      color: colors.text,
+      fontWeight: "900",
+    },
+    progressTrack: {
+      height: verticalScale(8),
+      overflow: "hidden",
+      borderRadius: scale(999),
+      backgroundColor: colors.surfaceSoft,
+    },
+    progressFill: {
+      height: "100%",
+      borderRadius: scale(999),
+      backgroundColor: colors.accent,
+    },
+    progressLabel: {
+      marginTop: moderateScale(-2),
+    },
+    questionIndexLabel: {
+      color: colors.text,
+      fontSize: normalizeFont(16),
+      fontWeight: "700",
+      textAlign: "center",
+      marginTop: moderateScale(6),
+    },
+    questionCard: {
+      borderRadius: scale(16),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(14),
+      gap: moderateScale(12),
+    },
+    warningText: {
+      marginTop: moderateScale(8),
+      color: "#ffb9b9",
+      fontSize: normalizeFont(12),
+      lineHeight: verticalScale(18),
+    },
+    timeWarningCard: {
+      borderRadius: scale(10),
+      borderWidth: scale(2),
+      borderColor: "#fbbf24",
+      backgroundColor: "#78350f",
+      paddingHorizontal: moderateScale(10),
+      paddingVertical: moderateScale(8),
+      shadowColor: "#fbbf24",
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
+      shadowOffset: { width: 0, height: 2 },
+      elevation: 3,
+    },
+    timeWarningText: {
+      color: "#fef3c7",
+      fontSize: normalizeFont(12),
+      fontWeight: "800",
+      lineHeight: verticalScale(18),
+    },
+    resultValue: {
+      color: colors.accent,
+      fontSize: normalizeFont(40),
+      fontWeight: "900",
+      letterSpacing: -0.6,
+    },
+    resultBody: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(15),
+      lineHeight: verticalScale(21),
+    },
+    syncStatus: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(12),
+      lineHeight: verticalScale(18),
+    },
+    primaryButton: {
+      borderRadius: scale(12),
+      backgroundColor: colors.accent,
+      paddingVertical: moderateScale(12),
+      alignItems: "center",
+      shadowColor: colors.accent,
+      shadowOpacity: 0.2,
+      shadowRadius: 6,
+      shadowOffset: { width: 0, height: 2 },
+      elevation: 4,
+    },
+    primaryButtonText: {
+      color: colors.background,
+      fontSize: normalizeFont(15),
+      fontWeight: "800",
+      letterSpacing: moderateScale(0.2),
+    },
+  });

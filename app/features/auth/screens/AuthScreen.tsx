@@ -17,8 +17,7 @@ import {
   scale,
   verticalScale,
 } from "../../../lib/responsive";
-import { colors } from "../../../theme/colors";
-import { typography } from "../../../theme/typography";
+import { useAppTheme } from "../../../theme/useAppTheme";
 
 type AuthScreenProps = {
   onAuthenticated?: (session: AuthSession) => void;
@@ -34,6 +33,11 @@ export function AuthScreen({ onAuthenticated }: AuthScreenProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { t } = useTranslation();
+  const { colors, typography } = useAppTheme();
+  const styles = useMemo(
+    () => createStyles(colors, typography),
+    [colors, typography],
+  );
 
   const tAuth = (key: string, options?: Record<string, unknown>) =>
     t(`auth.${key}`, options);
@@ -218,126 +222,127 @@ export function AuthScreen({ onAuthenticated }: AuthScreenProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.background,
-  },
-  content: {
-    paddingHorizontal: moderateScale(24),
-    paddingTop: moderateScale(24),
-    paddingBottom: moderateScale(36),
-    gap: moderateScale(14),
-  },
-  modeTabs: {
-    flexDirection: "row",
-    borderRadius: scale(14),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: moderateScale(4),
-    gap: moderateScale(6),
-  },
-  modeTab: {
-    flex: 1,
-    borderRadius: scale(10),
-    paddingVertical: moderateScale(10),
-    alignItems: "center",
-  },
-  modeTabActive: {
-    backgroundColor: colors.accent,
-  },
-  modeTabText: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(13),
-    fontWeight: "700",
-    letterSpacing: moderateScale(0.3),
-  },
-  modeTabTextActive: {
-    color: colors.background,
-  },
-  heroCard: {
-    borderRadius: scale(20),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: moderateScale(18),
-  },
-  title: {
-    marginTop: 8,
-  },
-  body: {
-    marginTop: moderateScale(10),
-    maxWidth: moderateScale(320),
-  },
-  formCard: {
-    borderRadius: scale(18),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: moderateScale(16),
-    gap: moderateScale(10),
-  },
-  fieldLabel: {
-    color: colors.text,
-    fontSize: normalizeFont(13),
-    fontWeight: "700",
-    letterSpacing: moderateScale(0.4),
-  },
-  input: {
-    borderRadius: scale(12),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceSoft,
-    color: colors.text,
-    paddingHorizontal: moderateScale(12),
-    paddingVertical: moderateScale(11),
-    fontSize: normalizeFont(15),
-  },
-  switchRow: {
-    marginTop: 4,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  switchLabel: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(14),
-    fontWeight: "600",
-  },
-  securityHint: {
-    marginTop: moderateScale(4),
-    borderRadius: scale(12),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceSoft,
-    padding: moderateScale(12),
-    gap: moderateScale(6),
-  },
-  securityBody: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(13),
-    lineHeight: verticalScale(18),
-  },
-  submitButton: {
-    marginTop: moderateScale(6),
-    borderRadius: scale(12),
-    backgroundColor: colors.accent,
-    paddingVertical: moderateScale(13),
-    alignItems: "center",
-  },
-  submitButtonDisabled: {
-    opacity: 0.45,
-  },
-  submitText: {
-    color: colors.background,
-    fontSize: normalizeFont(15),
-    fontWeight: "800",
-    letterSpacing: moderateScale(0.2),
-  },
-  errorText: {
-    marginTop: moderateScale(4),
-    color: "#ffb9b9",
-    fontSize: normalizeFont(12),
-    lineHeight: verticalScale(18),
-  },
-});
+const createStyles = (colors: any, typography: any) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: colors.background,
+    },
+    content: {
+      paddingHorizontal: moderateScale(24),
+      paddingTop: moderateScale(24),
+      paddingBottom: moderateScale(36),
+      gap: moderateScale(14),
+    },
+    modeTabs: {
+      flexDirection: "row",
+      borderRadius: scale(14),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(4),
+      gap: moderateScale(6),
+    },
+    modeTab: {
+      flex: 1,
+      borderRadius: scale(10),
+      paddingVertical: moderateScale(10),
+      alignItems: "center",
+    },
+    modeTabActive: {
+      backgroundColor: colors.accent,
+    },
+    modeTabText: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(13),
+      fontWeight: "700",
+      letterSpacing: moderateScale(0.3),
+    },
+    modeTabTextActive: {
+      color: colors.background,
+    },
+    heroCard: {
+      borderRadius: scale(20),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(18),
+    },
+    title: {
+      marginTop: 8,
+    },
+    body: {
+      marginTop: moderateScale(10),
+      maxWidth: moderateScale(320),
+    },
+    formCard: {
+      borderRadius: scale(18),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(16),
+      gap: moderateScale(10),
+    },
+    fieldLabel: {
+      color: colors.text,
+      fontSize: normalizeFont(13),
+      fontWeight: "700",
+      letterSpacing: moderateScale(0.4),
+    },
+    input: {
+      borderRadius: scale(12),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surfaceSoft,
+      color: colors.text,
+      paddingHorizontal: moderateScale(12),
+      paddingVertical: moderateScale(11),
+      fontSize: normalizeFont(15),
+    },
+    switchRow: {
+      marginTop: 4,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    switchLabel: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(14),
+      fontWeight: "600",
+    },
+    securityHint: {
+      marginTop: moderateScale(4),
+      borderRadius: scale(12),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surfaceSoft,
+      padding: moderateScale(12),
+      gap: moderateScale(6),
+    },
+    securityBody: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(13),
+      lineHeight: verticalScale(18),
+    },
+    submitButton: {
+      marginTop: moderateScale(6),
+      borderRadius: scale(12),
+      backgroundColor: colors.accent,
+      paddingVertical: moderateScale(13),
+      alignItems: "center",
+    },
+    submitButtonDisabled: {
+      opacity: 0.45,
+    },
+    submitText: {
+      color: colors.background,
+      fontSize: normalizeFont(15),
+      fontWeight: "800",
+      letterSpacing: moderateScale(0.2),
+    },
+    errorText: {
+      marginTop: moderateScale(4),
+      color: "#ffb9b9",
+      fontSize: normalizeFont(12),
+      lineHeight: verticalScale(18),
+    },
+  });

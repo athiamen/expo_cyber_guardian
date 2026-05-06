@@ -8,7 +8,9 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Text, useWindowDimensions, View
+  Text,
+  useWindowDimensions,
+  View,
 } from "react-native";
 import { getApiBaseUrl, getCourseByCode, getModules } from "../../../lib/api";
 import {
@@ -22,8 +24,7 @@ import {
   verticalScale,
 } from "../../../lib/responsive";
 import { ModulesStackParamList } from "../../../navigation/types";
-import { colors } from "../../../theme/colors";
-import { typography } from "../../../theme/typography";
+import { useAppTheme } from "../../../theme/useAppTheme";
 import { getCourseSections } from "../data/courseSections";
 
 type CourseScreenProps = {
@@ -69,6 +70,9 @@ export function CourseScreen({ userId }: CourseScreenProps) {
   } | null>(null);
   const { width } = useWindowDimensions();
   const isNarrow = width < 760;
+  const { colors, typography } = useAppTheme();
+
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const translateAnim = useRef(new Animated.Value(0)).current;
@@ -216,7 +220,6 @@ export function CourseScreen({ userId }: CourseScreenProps) {
       setCourseCompleted(true);
       return;
     }
-
     setCurrentStep((prev) => prev + 1);
   };
 
@@ -238,18 +241,18 @@ export function CourseScreen({ userId }: CourseScreenProps) {
     }
 
     navigation.push("CourseDetails", {
-      courseCode: nextCourse.code,
-      courseTitle: nextCourse.title,
-      moduleTitle: nextCourse.moduleTitle,
+      courseCode: String(nextCourse.code ?? ""),
+      courseTitle: String(nextCourse.title ?? ""),
+      moduleTitle: String(nextCourse.moduleTitle ?? ""),
       autoStart: true,
     });
   };
 
   const goToCourseVideo = () => {
     navigation.navigate("CourseVideo", {
-      courseCode,
-      courseTitle: courseData?.title ?? courseTitle,
-      moduleTitle: courseData?.moduleTitle ?? moduleTitle,
+      courseCode: String(courseCode ?? ""),
+      courseTitle: String(courseData?.title ?? courseTitle ?? ""),
+      moduleTitle: String(courseData?.moduleTitle ?? moduleTitle ?? ""),
     });
   };
 
@@ -503,291 +506,292 @@ export function CourseScreen({ userId }: CourseScreenProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.background,
-  },
-  content: {
-    paddingHorizontal: moderateScale(24),
-    paddingTop: moderateScale(24),
-    paddingBottom: moderateScale(36),
-    gap: moderateScale(14),
-  },
-  loadingWrap: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    gap: moderateScale(10),
-    backgroundColor: colors.background,
-  },
-  loadingText: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(13),
-    fontWeight: "700",
-  },
-  heroCard: {
-    borderRadius: scale(20),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: moderateScale(18),
-  },
-  title: {
-    marginTop: moderateScale(8),
-  },
-  body: {
-    marginTop: moderateScale(10),
-    textAlign: "left",
-    fontWeight: "bold",
-  },
-  errorText: {
-    marginTop: moderateScale(8),
-    color: "#ffb9b9",
-    fontSize: normalizeFont(12),
-    lineHeight: verticalScale(18),
-  },
-  statusChip: {
-    marginTop: moderateScale(10),
-    alignSelf: "flex-start",
-    borderRadius: 999,
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceSoft,
-    paddingHorizontal: moderateScale(10),
-    paddingVertical: moderateScale(6),
-  },
-  statusChipText: {
-    color: colors.text,
-    fontSize: normalizeFont(12),
-    fontWeight: "700",
-  },
-  metaRow: {
-    flexDirection: "row",
-    gap: moderateScale(10),
-  },
-  metaCard: {
-    flex: 1,
-    borderRadius: scale(14),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceSoft,
-    padding: moderateScale(12),
-  },
-  statLabel: {
-    marginTop: moderateScale(6),
-  },
-  videoCta: {
-    color: colors.accent,
-    fontSize: normalizeFont(28),
-    fontWeight: "900",
-    lineHeight: verticalScale(32),
-  },
-  sectionCard: {
-    borderRadius: scale(16),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: moderateScale(14),
-    gap: moderateScale(8),
-  },
-  learningColumn: {
-    flexDirection: "column",
-    gap: moderateScale(14),
-  },
-  learningColumnsRow: {
-    flexDirection: "row",
-    gap: moderateScale(14),
-    alignItems: "flex-start",
-  },
-  learningColumnItem: {
-    flex: 1,
-  },
-  timelineCard: {
-    borderRadius: scale(16),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: moderateScale(14),
-    gap: moderateScale(12),
-  },
-  timelineHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    gap: moderateScale(10),
-  },
-  timelineMeta: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(12),
-    fontWeight: "700",
-  },
-  progressTrack: {
-    height: verticalScale(8),
-    overflow: "hidden",
-    borderRadius: 999,
-    backgroundColor: colors.surfaceSoft,
-  },
-  progressFill: {
-    height: "100%",
-    borderRadius: 999,
-    backgroundColor: colors.accent,
-  },
-  sectionPills: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: moderateScale(8),
-  },
-  sectionPill: {
-    borderRadius: 999,
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceSoft,
-    paddingHorizontal: moderateScale(10),
-    paddingVertical: moderateScale(6),
-  },
-  sectionPillActive: {
-    borderColor: colors.accent,
-  },
-  sectionPillText: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(11),
-    fontWeight: "700",
-  },
-  sectionPillTextActive: {
-    color: colors.accent,
-  },
-  stepTitle: {
-    color: colors.text,
-    fontSize: normalizeFont(20),
-    fontWeight: "900",
-    letterSpacing: moderateScale(-0.4),
-  },
-  sectionBody: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(14),
-    lineHeight: verticalScale(21),
-  },
-  validationInsightsColumn: {
-    flexDirection: "row",
-    gap: moderateScale(10),
-    height: "100%",
-    width: "100%",
-  },
-  keyPointCard: {
-    marginTop: moderateScale(4),
-    borderRadius: scale(12),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceSoft,
-    padding: moderateScale(12),
-    gap: moderateScale(10),
-    width: "50%",
-  },
-  developmentCard: {
-    marginTop: moderateScale(4),
-    borderRadius: scale(12),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceSoft,
-    padding: moderateScale(12),
-    gap: moderateScale(8),
-    width: "49%",
-  },
-  developmentLabel: {
-    color: colors.development,
-    fontSize: normalizeFont(12),
-    fontWeight: "800",
-    letterSpacing: moderateScale(0.3),
-    textTransform: "uppercase",
-  },
-  developmentList: {
-    gap: moderateScale(10),
-  },
-  developmentBody: {
-    color: colors.text,
-    fontSize: normalizeFont(13),
-    lineHeight: verticalScale(20),
-  },
-  keyPointLabel: {
-    color: colors.warning,
-    fontSize: normalizeFont(12),
-    fontWeight: "800",
-    letterSpacing: moderateScale(0.3),
-    textTransform: "uppercase",
-  },
-  takeawayList: {
-    gap: moderateScale(6),
-  },
-  takeawayItem: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: moderateScale(8),
-  },
-  takeawayBullet: {
-    marginTop: moderateScale(6),
-    width: scale(6),
-    height: scale(6),
-    borderRadius: 999,
-    backgroundColor: colors.accent,
-  },
-  keyPointBody: {
-    flex: 1,
-    color: colors.text,
-    fontSize: normalizeFont(13),
-    lineHeight: verticalScale(19),
-  },
-  actionsRow: {
-    marginTop: moderateScale(4),
-    flexDirection: "row",
-    gap: moderateScale(10),
-  },
-  startButton: {
-    flex: 1,
-    borderRadius: scale(12),
-    backgroundColor: colors.accent,
-    paddingVertical: moderateScale(12),
-    alignItems: "center",
-  },
-  startButtonText: {
-    color: colors.background,
-    fontSize: normalizeFont(14),
-    fontWeight: "800",
-    letterSpacing: moderateScale(0.2),
-  },
-  secondaryButton: {
-    flex: 1,
-    borderRadius: scale(12),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceSoft,
-    paddingVertical: moderateScale(12),
-    alignItems: "center",
-  },
-  secondaryButtonDisabled: {
-    opacity: 0.45,
-  },
-  secondaryButtonText: {
-    color: colors.text,
-    fontSize: normalizeFont(14),
-    fontWeight: "700",
-  },
-  completionNextButton: {
-    borderRadius: scale(12),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceSoft,
-    paddingVertical: moderateScale(12),
-    alignItems: "center",
-  },
-  completionNextButtonText: {
-    color: colors.text,
-    fontSize: normalizeFont(14),
-    fontWeight: "700",
-  },
-  completionValue: {
-    color: colors.accent,
-    fontSize: normalizeFont(42),
-    fontWeight: "900",
-    letterSpacing: moderateScale(-0.8),
-  },
-});
+const createStyles = (colors: ReturnType<typeof useAppTheme>["colors"]) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: colors.background,
+    },
+    content: {
+      paddingHorizontal: moderateScale(24),
+      paddingTop: moderateScale(24),
+      paddingBottom: moderateScale(36),
+      gap: moderateScale(14),
+    },
+    loadingWrap: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      gap: moderateScale(10),
+      backgroundColor: colors.background,
+    },
+    loadingText: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(13),
+      fontWeight: "700",
+    },
+    heroCard: {
+      borderRadius: scale(20),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(18),
+    },
+    title: {
+      marginTop: moderateScale(8),
+    },
+    body: {
+      marginTop: moderateScale(10),
+      textAlign: "left",
+      fontWeight: "bold",
+    },
+    errorText: {
+      marginTop: moderateScale(8),
+      color: colors.error,
+      fontSize: normalizeFont(12),
+      lineHeight: verticalScale(18),
+    },
+    statusChip: {
+      marginTop: moderateScale(10),
+      alignSelf: "flex-start",
+      borderRadius: 999,
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surfaceSoft,
+      paddingHorizontal: moderateScale(10),
+      paddingVertical: moderateScale(6),
+    },
+    statusChipText: {
+      color: colors.text,
+      fontSize: normalizeFont(12),
+      fontWeight: "700",
+    },
+    metaRow: {
+      flexDirection: "row",
+      gap: moderateScale(10),
+    },
+    metaCard: {
+      flex: 1,
+      borderRadius: scale(14),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surfaceSoft,
+      padding: moderateScale(12),
+    },
+    statLabel: {
+      marginTop: moderateScale(6),
+    },
+    videoCta: {
+      color: colors.accent,
+      fontSize: normalizeFont(28),
+      fontWeight: "900",
+      lineHeight: verticalScale(32),
+    },
+    sectionCard: {
+      borderRadius: scale(16),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(14),
+      gap: moderateScale(8),
+    },
+    learningColumn: {
+      flexDirection: "column",
+      gap: moderateScale(14),
+    },
+    learningColumnsRow: {
+      flexDirection: "row",
+      gap: moderateScale(14),
+      alignItems: "flex-start",
+    },
+    learningColumnItem: {
+      flex: 1,
+    },
+    timelineCard: {
+      borderRadius: scale(16),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(14),
+      gap: moderateScale(12),
+    },
+    timelineHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      gap: moderateScale(10),
+    },
+    timelineMeta: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(12),
+      fontWeight: "700",
+    },
+    progressTrack: {
+      height: verticalScale(8),
+      overflow: "hidden",
+      borderRadius: 999,
+      backgroundColor: colors.surfaceSoft,
+    },
+    progressFill: {
+      height: "100%",
+      borderRadius: 999,
+      backgroundColor: colors.accent,
+    },
+    sectionPills: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: moderateScale(8),
+    },
+    sectionPill: {
+      borderRadius: 999,
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surfaceSoft,
+      paddingHorizontal: moderateScale(10),
+      paddingVertical: moderateScale(6),
+    },
+    sectionPillActive: {
+      borderColor: colors.accent,
+    },
+    sectionPillText: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(11),
+      fontWeight: "700",
+    },
+    sectionPillTextActive: {
+      color: colors.accent,
+    },
+    stepTitle: {
+      color: colors.text,
+      fontSize: normalizeFont(20),
+      fontWeight: "900",
+      letterSpacing: moderateScale(-0.4),
+    },
+    sectionBody: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(14),
+      lineHeight: verticalScale(21),
+    },
+    validationInsightsColumn: {
+      flexDirection: "row",
+      gap: moderateScale(10),
+      height: "100%",
+      width: "100%",
+    },
+    keyPointCard: {
+      marginTop: moderateScale(4),
+      borderRadius: scale(12),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surfaceSoft,
+      padding: moderateScale(12),
+      gap: moderateScale(10),
+      width: "50%",
+    },
+    developmentCard: {
+      marginTop: moderateScale(4),
+      borderRadius: scale(12),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surfaceSoft,
+      padding: moderateScale(12),
+      gap: moderateScale(8),
+      width: "49%",
+    },
+    developmentLabel: {
+      color: colors.development,
+      fontSize: normalizeFont(12),
+      fontWeight: "800",
+      letterSpacing: moderateScale(0.3),
+      textTransform: "uppercase",
+    },
+    developmentList: {
+      gap: moderateScale(10),
+    },
+    developmentBody: {
+      color: colors.text,
+      fontSize: normalizeFont(13),
+      lineHeight: verticalScale(20),
+    },
+    keyPointLabel: {
+      color: colors.warning,
+      fontSize: normalizeFont(12),
+      fontWeight: "800",
+      letterSpacing: moderateScale(0.3),
+      textTransform: "uppercase",
+    },
+    takeawayList: {
+      gap: moderateScale(6),
+    },
+    takeawayItem: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: moderateScale(8),
+    },
+    takeawayBullet: {
+      marginTop: moderateScale(6),
+      width: scale(6),
+      height: scale(6),
+      borderRadius: 999,
+      backgroundColor: colors.accent,
+    },
+    keyPointBody: {
+      flex: 1,
+      color: colors.text,
+      fontSize: normalizeFont(13),
+      lineHeight: verticalScale(19),
+    },
+    actionsRow: {
+      marginTop: moderateScale(4),
+      flexDirection: "row",
+      gap: moderateScale(10),
+    },
+    startButton: {
+      flex: 1,
+      borderRadius: scale(12),
+      backgroundColor: colors.accent,
+      paddingVertical: moderateScale(12),
+      alignItems: "center",
+    },
+    startButtonText: {
+      color: colors.background,
+      fontSize: normalizeFont(14),
+      fontWeight: "800",
+      letterSpacing: moderateScale(0.2),
+    },
+    secondaryButton: {
+      flex: 1,
+      borderRadius: scale(12),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surfaceSoft,
+      paddingVertical: moderateScale(12),
+      alignItems: "center",
+    },
+    secondaryButtonDisabled: {
+      opacity: 0.45,
+    },
+    secondaryButtonText: {
+      color: colors.text,
+      fontSize: normalizeFont(14),
+      fontWeight: "700",
+    },
+    completionNextButton: {
+      borderRadius: scale(12),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surfaceSoft,
+      paddingVertical: moderateScale(12),
+      alignItems: "center",
+    },
+    completionNextButtonText: {
+      color: colors.text,
+      fontSize: normalizeFont(14),
+      fontWeight: "700",
+    },
+    completionValue: {
+      color: colors.accent,
+      fontSize: normalizeFont(42),
+      fontWeight: "900",
+      letterSpacing: moderateScale(-0.8),
+    },
+  });

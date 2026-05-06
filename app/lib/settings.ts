@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { getItem, setItem } from "./asyncStorageSafe";
 
 export type ThemeMode = "light" | "dark" | "auto";
@@ -10,39 +10,77 @@ export interface AppSettings {
 
 const SETTINGS_KEY = "app_settings";
 
+type SettingsListener = () => void;
+
 const DEFAULT_SETTINGS: AppSettings = {
   soundEnabled: true,
   themeMode: "auto",
 };
 
-export function useSettings() {
-  const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);
-  const [isLoading, setIsLoading] = useState(true);
+let cachedSettings: AppSettings = DEFAULT_SETTINGS;
+let settingsLoaded = false;
+let loadPromise: Promise<void> | null = null;
+const settingsListeners = new Set<SettingsListener>();
 
-  // Load settings on mount
-  useEffect(() => {
-    loadSettings();
-  }, []);
+function emitSettingsChange() {
+  settingsListeners.forEach((listener) => listener());
+}
 
-  async function loadSettings() {
-    try {
-      const savedSettings = await getItem(SETTINGS_KEY);
-      if (savedSettings) {
-        const parsed = JSON.parse(savedSettings);
-        setSettings({ ...DEFAULT_SETTINGS, ...parsed });
-      }
-    } catch (error) {
-      console.warn("Failed to load settings:", error);
-    } finally {
-      setIsLoading(false);
-    }
+async function ensureSettingsLoaded() {
+  if (settingsLoaded) {
+    return;
   }
 
+  if (!loadPromise) {
+    loadPromise = (async () => {
+      try {
+        const savedSettings = await getItem(SETTINGS_KEY);
+        if (savedSettings) {
+          const parsed = JSON.parse(savedSettings) as Partial<AppSettings>;
+          cachedSettings = { ...DEFAULT_SETTINGS, ...parsed };
+        }
+      } catch (error) {
+        console.warn("Failed to load settings:", error);
+      } finally {
+        settingsLoaded = true;
+        loadPromise = null;
+        emitSettingsChange();
+      }
+    })();
+  }
+
+  await loadPromise;
+}
+
+export function getSettingsSnapshot() {
+  return cachedSettings;
+}
+
+export function subscribeToSettings(listener: SettingsListener) {
+  settingsListeners.add(listener);
+  return () => {
+    settingsListeners.delete(listener);
+  };
+}
+
+export function useSettings() {
+  const settings = useSyncExternalStore(
+    subscribeToSettings,
+    getSettingsSnapshot,
+    getSettingsSnapshot,
+  );
+  const isLoading = !settingsLoaded;
+
+  useEffect(() => {
+    void ensureSettingsLoaded();
+  }, []);
+
   async function updateSettings(updates: Partial<AppSettings>) {
-    const newSettings = { ...settings, ...updates };
-    setSettings(newSettings);
+    await ensureSettingsLoaded();
+    cachedSettings = { ...cachedSettings, ...updates };
+    emitSettingsChange();
     try {
-      await setItem(SETTINGS_KEY, JSON.stringify(newSettings));
+      await setItem(SETTINGS_KEY, JSON.stringify(cachedSettings));
     } catch (error) {
       console.warn("Failed to save settings:", error);
     }

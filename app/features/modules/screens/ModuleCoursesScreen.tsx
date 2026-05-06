@@ -19,8 +19,7 @@ import {
   verticalScale,
 } from "../../../lib/responsive";
 import { loadSession } from "../../../lib/sessionStorage";
-import { colors } from "../../../theme/colors";
-import { typography } from "../../../theme/typography";
+import { useAppTheme } from "../../../theme/useAppTheme";
 
 type ModuleCoursesParams = {
   moduleCode?: string;
@@ -40,6 +39,7 @@ export function ModuleCoursesScreen() {
       t(`modules.${key}`, options),
     [t],
   );
+  const { colors, typography } = useAppTheme();
   const [modules, setModules] = useState<ModuleItem[]>([]);
   const [readCourseCodes, setReadCourseCodes] = useState<string[]>([]);
   const [completedCourseCodes, setCompletedCourseCodes] = useState<string[]>(
@@ -136,11 +136,11 @@ export function ModuleCoursesScreen() {
     router.push({
       pathname: "/course",
       params: {
-        courseCode: course.code,
-        courseTitle: course.title,
-        moduleTitle: selectedModule.title,
+        courseCode: String(course.code ?? ""),
+        courseTitle: String(course.title ?? ""),
+        moduleTitle: String(selectedModule.title ?? ""),
         userId: sessionUserId,
-        moduleCode: selectedModule.code,
+        moduleCode: String(selectedModule.code ?? ""),
       },
     });
   };
@@ -149,8 +149,8 @@ export function ModuleCoursesScreen() {
     router.push({
       pathname: "/quiz",
       params: {
-        quizId: quiz.code,
-        quizTitle: quiz.title,
+        quizId: String(quiz.code ?? ""),
+        quizTitle: String(quiz.title ?? ""),
         userId: sessionUserId,
         token: sessionToken,
       },
@@ -179,6 +179,8 @@ export function ModuleCoursesScreen() {
     return selectedModule.courses.filter((course) => !readSet.has(course.code))
       .length;
   }, [completedCourseCodes, readCourseCodes, selectedModule]);
+
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -290,227 +292,228 @@ export function ModuleCoursesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#f1f5ff",
-  },
-  content: {
-    position: "relative",
-    paddingHorizontal: moderateScale(24),
-    paddingTop: moderateScale(24),
-    paddingBottom: moderateScale(36),
-    gap: moderateScale(16),
-  },
-  ambientBackground: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    height: verticalScale(220),
-  },
-  ambientBlobLarge: {
-    position: "absolute",
-    top: verticalScale(-72),
-    right: scale(-44),
-    width: scale(220),
-    height: scale(220),
-    borderRadius: scale(999),
-    backgroundColor: "rgba(79, 140, 255, 0.16)",
-  },
-  ambientBlobSmall: {
-    position: "absolute",
-    top: verticalScale(18),
-    left: scale(-56),
-    width: scale(136),
-    height: scale(136),
-    borderRadius: scale(999),
-    backgroundColor: "rgba(245, 158, 11, 0.12)",
-  },
-  backButton: {
-    alignSelf: "flex-start",
-    borderRadius: scale(999),
-    borderWidth: scale(1),
-    borderColor: "#8cb0ec",
-    backgroundColor: "#ffffff",
-    paddingHorizontal: moderateScale(14),
-    paddingVertical: moderateScale(8),
-    shadowColor: "#173465",
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 5 },
-    elevation: 2,
-  },
-  backButtonText: {
-    color: colors.text,
-    fontSize: normalizeFont(12),
-    fontWeight: "800",
-    textTransform: "uppercase",
-    letterSpacing: moderateScale(0.8),
-  },
-  heroCard: {
-    borderRadius: scale(24),
-    borderWidth: scale(1),
-    borderColor: "#86a6dd",
-    backgroundColor: "#f9fbff",
-    padding: moderateScale(20),
-    shadowColor: "#14356f",
-    shadowOpacity: 0.14,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 12 },
-    elevation: 6,
-  },
-  title: {
-    marginTop: moderateScale(8),
-  },
-  body: {
-    marginTop: moderateScale(10),
-  },
-  stateCard: {
-    borderRadius: scale(18),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: "#ffffff",
-    padding: moderateScale(16),
-    alignItems: "center",
-    gap: moderateScale(8),
-  },
-  stateText: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(13),
-    fontWeight: "700",
-  },
-  errorText: {
-    color: colors.error,
-    fontSize: normalizeFont(13),
-    fontWeight: "700",
-    textAlign: "center",
-  },
-  coursesBlock: {
-    gap: moderateScale(12),
-  },
-  quizSectionHeader: {
-    flexDirection: "row",
-    alignItems: "baseline",
-    justifyContent: "space-between",
-    gap: moderateScale(12),
-    marginTop: moderateScale(8),
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    alignItems: "baseline",
-    justifyContent: "space-between",
-    gap: moderateScale(12),
-  },
-  sectionMeta: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(12),
-    fontWeight: "700",
-    textTransform: "uppercase",
-    letterSpacing: moderateScale(0.8),
-  },
-  courseCard: {
-    borderRadius: scale(20),
-    borderWidth: scale(1),
-    borderColor: "#8cb0ec",
-    backgroundColor: "#ffffff",
-    padding: moderateScale(16),
-    gap: moderateScale(14),
-    shadowColor: "#173465",
-    shadowOpacity: 0.08,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 7 },
-    elevation: 3,
-  },
-  courseInfo: {
-    gap: moderateScale(6),
-  },
-  courseTitle: {
-    color: colors.text,
-    fontSize: normalizeFont(18),
-    fontWeight: "900",
-  },
-  courseMeta: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(12),
-    fontWeight: "600",
-  },
-  courseObjective: {
-    color: colors.text,
-    fontSize: normalizeFont(13),
-    lineHeight: verticalScale(20),
-    marginTop: moderateScale(2),
-  },
-  courseButton: {
-    alignSelf: "flex-start",
-    borderRadius: scale(12),
-    backgroundColor: colors.accent,
-    paddingHorizontal: moderateScale(18),
-    paddingVertical: moderateScale(10),
-  },
-  courseButtonText: {
-    color: "#ffffff",
-    fontSize: normalizeFont(12),
-    fontWeight: "900",
-    textTransform: "uppercase",
-    letterSpacing: moderateScale(0.8),
-  },
-  quizCard: {
-    borderRadius: scale(20),
-    borderWidth: scale(1),
-    borderColor: "#8cb0ec",
-    backgroundColor: "#ffffff",
-    padding: moderateScale(16),
-    gap: moderateScale(14),
-    shadowColor: "#173465",
-    shadowOpacity: 0.08,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 7 },
-    elevation: 3,
-  },
-  quizInfo: {
-    gap: moderateScale(6),
-  },
-  quizLockedHintCard: {
-    borderRadius: scale(12),
-    borderWidth: scale(1),
-    borderColor: "#b6cdf7",
-    backgroundColor: "#edf3ff",
-    paddingHorizontal: moderateScale(12),
-    paddingVertical: moderateScale(10),
-  },
-  quizLockedHintText: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(12),
-    fontWeight: "700",
-    lineHeight: verticalScale(18),
-  },
-  quizTitle: {
-    color: colors.text,
-    fontSize: normalizeFont(18),
-    fontWeight: "900",
-  },
-  quizMeta: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(12),
-    fontWeight: "600",
-  },
-  quizButton: {
-    alignSelf: "flex-start",
-    borderRadius: scale(12),
-    backgroundColor: colors.accent,
-    paddingHorizontal: moderateScale(18),
-    paddingVertical: moderateScale(10),
-  },
-  quizButtonDisabled: {
-    backgroundColor: colors.quizButtonLockedBg,
-    borderWidth: scale(1),
-    borderColor: colors.quizButtonLockedBorder,
-  },
-  quizButtonText: {
-    color: "#ffffff",
-    fontSize: normalizeFont(12),
-    fontWeight: "900",
-    textTransform: "uppercase",
-    letterSpacing: moderateScale(0.8),
-  },
-});
+const createStyles = (colors: ReturnType<typeof useAppTheme>["colors"]) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: colors.background,
+    },
+    content: {
+      position: "relative",
+      paddingHorizontal: moderateScale(24),
+      paddingTop: moderateScale(24),
+      paddingBottom: moderateScale(36),
+      gap: moderateScale(16),
+    },
+    ambientBackground: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      height: verticalScale(220),
+    },
+    ambientBlobLarge: {
+      position: "absolute",
+      top: verticalScale(-72),
+      right: scale(-44),
+      width: scale(220),
+      height: scale(220),
+      borderRadius: scale(999),
+      backgroundColor: "rgba(79, 140, 255, 0.16)",
+    },
+    ambientBlobSmall: {
+      position: "absolute",
+      top: verticalScale(18),
+      left: scale(-56),
+      width: scale(136),
+      height: scale(136),
+      borderRadius: scale(999),
+      backgroundColor: "rgba(245, 158, 11, 0.12)",
+    },
+    backButton: {
+      alignSelf: "flex-start",
+      borderRadius: scale(999),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      paddingHorizontal: moderateScale(14),
+      paddingVertical: moderateScale(8),
+      shadowColor: colors.text,
+      shadowOpacity: 0.08,
+      shadowRadius: 8,
+      shadowOffset: { width: 0, height: 5 },
+      elevation: 2,
+    },
+    backButtonText: {
+      color: colors.text,
+      fontSize: normalizeFont(12),
+      fontWeight: "800",
+      textTransform: "uppercase",
+      letterSpacing: moderateScale(0.8),
+    },
+    heroCard: {
+      borderRadius: scale(24),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(20),
+      shadowColor: colors.text,
+      shadowOpacity: 0.14,
+      shadowRadius: 18,
+      shadowOffset: { width: 0, height: 12 },
+      elevation: 6,
+    },
+    title: {
+      marginTop: moderateScale(8),
+    },
+    body: {
+      marginTop: moderateScale(10),
+    },
+    stateCard: {
+      borderRadius: scale(18),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(16),
+      alignItems: "center",
+      gap: moderateScale(8),
+    },
+    stateText: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(13),
+      fontWeight: "700",
+    },
+    errorText: {
+      color: colors.error,
+      fontSize: normalizeFont(13),
+      fontWeight: "700",
+      textAlign: "center",
+    },
+    coursesBlock: {
+      gap: moderateScale(12),
+    },
+    quizSectionHeader: {
+      flexDirection: "row",
+      alignItems: "baseline",
+      justifyContent: "space-between",
+      gap: moderateScale(12),
+      marginTop: moderateScale(8),
+    },
+    sectionHeader: {
+      flexDirection: "row",
+      alignItems: "baseline",
+      justifyContent: "space-between",
+      gap: moderateScale(12),
+    },
+    sectionMeta: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(12),
+      fontWeight: "700",
+      textTransform: "uppercase",
+      letterSpacing: moderateScale(0.8),
+    },
+    courseCard: {
+      borderRadius: scale(20),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(16),
+      gap: moderateScale(14),
+      shadowColor: colors.text,
+      shadowOpacity: 0.08,
+      shadowRadius: 10,
+      shadowOffset: { width: 0, height: 7 },
+      elevation: 3,
+    },
+    courseInfo: {
+      gap: moderateScale(6),
+    },
+    courseTitle: {
+      color: colors.text,
+      fontSize: normalizeFont(18),
+      fontWeight: "900",
+    },
+    courseMeta: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(12),
+      fontWeight: "600",
+    },
+    courseObjective: {
+      color: colors.text,
+      fontSize: normalizeFont(13),
+      lineHeight: verticalScale(20),
+      marginTop: moderateScale(2),
+    },
+    courseButton: {
+      alignSelf: "flex-start",
+      borderRadius: scale(12),
+      backgroundColor: colors.accent,
+      paddingHorizontal: moderateScale(18),
+      paddingVertical: moderateScale(10),
+    },
+    courseButtonText: {
+      color: "#ffffff",
+      fontSize: normalizeFont(12),
+      fontWeight: "900",
+      textTransform: "uppercase",
+      letterSpacing: moderateScale(0.8),
+    },
+    quizCard: {
+      borderRadius: scale(20),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(16),
+      gap: moderateScale(14),
+      shadowColor: colors.text,
+      shadowOpacity: 0.08,
+      shadowRadius: 10,
+      shadowOffset: { width: 0, height: 7 },
+      elevation: 3,
+    },
+    quizInfo: {
+      gap: moderateScale(6),
+    },
+    quizLockedHintCard: {
+      borderRadius: scale(12),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surfaceSoft,
+      paddingHorizontal: moderateScale(12),
+      paddingVertical: moderateScale(10),
+    },
+    quizLockedHintText: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(12),
+      fontWeight: "700",
+      lineHeight: verticalScale(18),
+    },
+    quizTitle: {
+      color: colors.text,
+      fontSize: normalizeFont(18),
+      fontWeight: "900",
+    },
+    quizMeta: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(12),
+      fontWeight: "600",
+    },
+    quizButton: {
+      alignSelf: "flex-start",
+      borderRadius: scale(12),
+      backgroundColor: colors.accent,
+      paddingHorizontal: moderateScale(18),
+      paddingVertical: moderateScale(10),
+    },
+    quizButtonDisabled: {
+      backgroundColor: colors.quizButtonLockedBg,
+      borderWidth: scale(1),
+      borderColor: colors.quizButtonLockedBorder,
+    },
+    quizButtonText: {
+      color: colors.background,
+      fontSize: normalizeFont(12),
+      fontWeight: "900",
+      textTransform: "uppercase",
+      letterSpacing: moderateScale(0.8),
+    },
+  });

@@ -18,8 +18,7 @@ import {
   scale,
   verticalScale,
 } from "../../../lib/responsive";
-import { colors } from "../../../theme/colors";
-import { typography } from "../../../theme/typography";
+import { useAppTheme } from "../../../theme/useAppTheme";
 import { buildCourseJourneyContent } from "../data/courseJourney";
 
 type CourseJourneyParams = {
@@ -49,6 +48,9 @@ export function CourseJourneyScreen() {
   const [moduleCourses, setModuleCourses] = useState<
     Array<{ code: string; title: string }>
   >([]);
+  const { colors, typography } = useAppTheme();
+
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   const userScope = userId ?? "anonymous";
 
@@ -181,11 +183,11 @@ export function CourseJourneyScreen() {
     router.push({
       pathname: "/course",
       params: {
-        courseCode: nextCourse.code,
-        courseTitle: nextCourse.title,
-        moduleTitle: moduleTitle,
+        courseCode: String(nextCourse.code ?? ""),
+        courseTitle: String(nextCourse.title ?? ""),
+        moduleTitle: String(moduleTitle ?? ""),
         userId: userScope,
-        moduleCode: moduleCode,
+        moduleCode: String(moduleCode ?? ""),
       },
     });
   };
@@ -402,205 +404,206 @@ export function CourseJourneyScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.background,
-  },
-  content: {
-    paddingHorizontal: moderateScale(24),
-    paddingTop: moderateScale(24),
-    paddingBottom: moderateScale(36),
-    gap: moderateScale(16),
-  },
-  loadingWrap: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    gap: moderateScale(10),
-    backgroundColor: colors.background,
-  },
-  loadingText: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(13),
-    fontWeight: "700",
-  },
-  backButton: {
-    alignSelf: "flex-start",
-    borderRadius: scale(999),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    paddingHorizontal: moderateScale(12),
-    paddingVertical: moderateScale(6),
-  },
-  backButtonText: {
-    color: colors.text,
-    fontSize: normalizeFont(11),
-    fontWeight: "800",
-    textTransform: "uppercase",
-    letterSpacing: moderateScale(0.6),
-  },
-  errorText: {
-    color: colors.error,
-    fontSize: normalizeFont(13),
-    fontWeight: "700",
-    textAlign: "center",
-  },
-  heroCard: {
-    borderRadius: scale(20),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: moderateScale(18),
-    gap: moderateScale(10),
-  },
-  title: {
-    marginTop: moderateScale(8),
-  },
-  body: {
-    marginTop: moderateScale(2),
-  },
-  stepTrack: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: moderateScale(8),
-  },
-  stepChip: {
-    borderRadius: scale(999),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    paddingHorizontal: moderateScale(12),
-    paddingVertical: moderateScale(8),
-  },
-  stepChipActive: {
-    backgroundColor: colors.surfaceSoft,
-    borderColor: colors.accent,
-  },
-  stepChipText: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(12),
-    fontWeight: "800",
-    textTransform: "uppercase",
-    letterSpacing: moderateScale(0.6),
-  },
-  stepChipTextActive: {
-    color: colors.accent,
-  },
-  pageCard: {
-    borderRadius: scale(20),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: moderateScale(18),
-    gap: moderateScale(14),
-  },
-  pageTitle: {
-    color: colors.text,
-    fontSize: normalizeFont(22),
-    fontWeight: "900",
-    lineHeight: verticalScale(28),
-  },
-  objectiveBox: {
-    borderRadius: scale(16),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceSoft,
-    padding: moderateScale(16),
-  },
-  objectiveText: {
-    color: colors.text,
-    fontSize: normalizeFont(15),
-    lineHeight: verticalScale(23),
-  },
-  listBlock: {
-    gap: moderateScale(12),
-  },
-  paragraphBlock: {
-    flexDirection: "row",
-    gap: moderateScale(10),
-    alignItems: "flex-start",
-  },
-  bullet: {
-    width: scale(8),
-    height: scale(8),
-    borderRadius: scale(999),
-    marginTop: verticalScale(7),
-    backgroundColor: colors.accent,
-  },
-  paragraphText: {
-    flex: 1,
-    color: colors.textMuted,
-    fontSize: normalizeFont(14),
-    lineHeight: verticalScale(22),
-  },
-  actionsRow: {
-    flexDirection: "row",
-    gap: moderateScale(12),
-    marginTop: moderateScale(8),
-  },
-  secondaryButton: {
-    flex: 1,
-    borderRadius: scale(14),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceSoft,
-    paddingVertical: moderateScale(12),
-    alignItems: "center",
-  },
-  secondaryButtonDisabled: {
-    opacity: 0.45,
-  },
-  secondaryButtonText: {
-    color: colors.text,
-    fontSize: normalizeFont(12),
-    fontWeight: "800",
-    textTransform: "uppercase",
-    letterSpacing: moderateScale(0.7),
-  },
-  primaryButton: {
-    flex: 1,
-    borderRadius: scale(14),
-    backgroundColor: colors.accent,
-    paddingVertical: moderateScale(12),
-    alignItems: "center",
-  },
-  primaryButtonText: {
-    color: "#ffffff",
-    fontSize: normalizeFont(12),
-    fontWeight: "900",
-    textTransform: "uppercase",
-    letterSpacing: moderateScale(0.7),
-  },
-  completionCard: {
-    borderRadius: scale(20),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: moderateScale(18),
-    gap: moderateScale(12),
-  },
-  completionTitle: {
-    color: colors.text,
-    fontSize: normalizeFont(22),
-    fontWeight: "900",
-  },
-  completionText: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(14),
-    lineHeight: verticalScale(22),
-  },
-  completionImageBlock: {
-    borderRadius: scale(16),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceSoft,
-    padding: moderateScale(16),
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  completionImage: {
-    width: scale(120),
-    height: scale(120),
-  },
-});
+const createStyles = (colors: ReturnType<typeof useAppTheme>["colors"]) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: colors.background,
+    },
+    content: {
+      paddingHorizontal: moderateScale(24),
+      paddingTop: moderateScale(24),
+      paddingBottom: moderateScale(36),
+      gap: moderateScale(16),
+    },
+    loadingWrap: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      gap: moderateScale(10),
+      backgroundColor: colors.background,
+    },
+    loadingText: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(13),
+      fontWeight: "700",
+    },
+    backButton: {
+      alignSelf: "flex-start",
+      borderRadius: scale(999),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      paddingHorizontal: moderateScale(12),
+      paddingVertical: moderateScale(6),
+    },
+    backButtonText: {
+      color: colors.text,
+      fontSize: normalizeFont(11),
+      fontWeight: "800",
+      textTransform: "uppercase",
+      letterSpacing: moderateScale(0.6),
+    },
+    errorText: {
+      color: colors.error,
+      fontSize: normalizeFont(13),
+      fontWeight: "700",
+      textAlign: "center",
+    },
+    heroCard: {
+      borderRadius: scale(20),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(18),
+      gap: moderateScale(10),
+    },
+    title: {
+      marginTop: moderateScale(8),
+    },
+    body: {
+      marginTop: moderateScale(2),
+    },
+    stepTrack: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: moderateScale(8),
+    },
+    stepChip: {
+      borderRadius: scale(999),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      paddingHorizontal: moderateScale(12),
+      paddingVertical: moderateScale(8),
+    },
+    stepChipActive: {
+      backgroundColor: colors.surfaceSoft,
+      borderColor: colors.accent,
+    },
+    stepChipText: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(12),
+      fontWeight: "800",
+      textTransform: "uppercase",
+      letterSpacing: moderateScale(0.6),
+    },
+    stepChipTextActive: {
+      color: colors.accent,
+    },
+    pageCard: {
+      borderRadius: scale(20),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(18),
+      gap: moderateScale(14),
+    },
+    pageTitle: {
+      color: colors.text,
+      fontSize: normalizeFont(22),
+      fontWeight: "900",
+      lineHeight: verticalScale(28),
+    },
+    objectiveBox: {
+      borderRadius: scale(16),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surfaceSoft,
+      padding: moderateScale(16),
+    },
+    objectiveText: {
+      color: colors.text,
+      fontSize: normalizeFont(15),
+      lineHeight: verticalScale(23),
+    },
+    listBlock: {
+      gap: moderateScale(12),
+    },
+    paragraphBlock: {
+      flexDirection: "row",
+      gap: moderateScale(10),
+      alignItems: "flex-start",
+    },
+    bullet: {
+      width: scale(8),
+      height: scale(8),
+      borderRadius: scale(999),
+      marginTop: verticalScale(7),
+      backgroundColor: colors.accent,
+    },
+    paragraphText: {
+      flex: 1,
+      color: colors.textMuted,
+      fontSize: normalizeFont(14),
+      lineHeight: verticalScale(22),
+    },
+    actionsRow: {
+      flexDirection: "row",
+      gap: moderateScale(12),
+      marginTop: moderateScale(8),
+    },
+    secondaryButton: {
+      flex: 1,
+      borderRadius: scale(14),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surfaceSoft,
+      paddingVertical: moderateScale(12),
+      alignItems: "center",
+    },
+    secondaryButtonDisabled: {
+      opacity: 0.45,
+    },
+    secondaryButtonText: {
+      color: colors.text,
+      fontSize: normalizeFont(12),
+      fontWeight: "800",
+      textTransform: "uppercase",
+      letterSpacing: moderateScale(0.7),
+    },
+    primaryButton: {
+      flex: 1,
+      borderRadius: scale(14),
+      backgroundColor: colors.accent,
+      paddingVertical: moderateScale(12),
+      alignItems: "center",
+    },
+    primaryButtonText: {
+      color: colors.background,
+      fontSize: normalizeFont(12),
+      fontWeight: "900",
+      textTransform: "uppercase",
+      letterSpacing: moderateScale(0.7),
+    },
+    completionCard: {
+      borderRadius: scale(20),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(18),
+      gap: moderateScale(12),
+    },
+    completionTitle: {
+      color: colors.text,
+      fontSize: normalizeFont(22),
+      fontWeight: "900",
+    },
+    completionText: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(14),
+      lineHeight: verticalScale(22),
+    },
+    completionImageBlock: {
+      borderRadius: scale(16),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surfaceSoft,
+      padding: moderateScale(16),
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    completionImage: {
+      width: scale(120),
+      height: scale(120),
+    },
+  });

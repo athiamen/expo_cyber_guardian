@@ -1,6 +1,8 @@
+import { AppThemeColors } from "@/app/theme/palette";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
+import { useAppTheme } from "../../../theme/useAppTheme";
 import { FirewallDefenderView } from "../components/FirewallDefenderView";
 import { FirewallResultsView } from "../components/FirewallResultsView";
 import { getOrCreateQuiz } from "../data/quizCatalog";
@@ -44,7 +46,12 @@ export function FirewallDefenderQuizScreen({
     selectedDifficulty,
     "firewall",
   );
+  const { colors, typography } = useAppTheme();
 
+  const styles = useMemo(
+    () => createStyles(colors, typography),
+    [colors, typography],
+  );
   // Use custom hooks for state management
   const quizCore = useQuizCore(quizDefinition, userId);
   const quizFirewall = useFirewallAnimationLoop(
@@ -190,4 +197,87 @@ export function FirewallDefenderQuizScreen({
       )}
     </View>
   );
+}
+
+function createStyles(
+  colors: AppThemeColors,
+  typography: {
+    eyebrow: {
+      color: string;
+      fontSize: number;
+      fontWeight: "700";
+      letterSpacing: number;
+      textTransform: "uppercase";
+    };
+    eyebrowWarning: {
+      color: string;
+      fontSize: number;
+      fontWeight: "700";
+      letterSpacing: number;
+      textTransform: "uppercase";
+    };
+    screenTitle: {
+      color: string;
+      fontSize: number;
+      fontWeight: "900";
+      lineHeight: number;
+      letterSpacing: number;
+    };
+    heroTitle: {
+      color: string;
+      fontSize: number;
+      fontWeight: "900";
+      lineHeight: number;
+      letterSpacing: number;
+    };
+    body: { color: string; fontSize: number; lineHeight: number };
+    sectionTitle: {
+      color: string;
+      fontSize: number;
+      fontWeight: "800";
+      lineHeight: number;
+      letterSpacing: number;
+    };
+    statValue: {
+      color: string;
+      fontSize: number;
+      fontWeight: "900";
+      letterSpacing: number;
+    };
+    statLabel: {
+      color: string;
+      fontSize: number;
+      fontWeight: "700";
+      letterSpacing: number;
+      textTransform: "uppercase";
+    };
+    cardCode: {
+      color: string;
+      fontSize: number;
+      fontWeight: "700";
+      letterSpacing: number;
+      textTransform: "uppercase";
+    };
+    cardTitle: {
+      color: string;
+      fontSize: number;
+      fontWeight: "800";
+      lineHeight: number;
+    };
+    cardMeta: {
+      color: string;
+      fontSize: number;
+      fontWeight: "500";
+      lineHeight: number;
+    };
+    progressLabel: {
+      color: string;
+      fontSize: number;
+      fontWeight: "700";
+      letterSpacing: number;
+      textTransform: "uppercase";
+    };
+  },
+): any {
+  throw new Error("Function not implemented.");
 }

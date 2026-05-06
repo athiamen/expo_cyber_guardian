@@ -1,18 +1,19 @@
+import { AppThemeColors } from "@/app/theme/palette";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import {
-    moderateScale,
-    normalizeFont,
-    scale,
-    verticalScale,
+  moderateScale,
+  normalizeFont,
+  scale,
+  verticalScale,
 } from "../../../lib/responsive";
-import { colors } from "../../../theme/colors";
 import { typography } from "../../../theme/typography";
+import { useAppTheme } from "../../../theme/useAppTheme";
 import { ChatGuardianView } from "../components/ChatGuardianView";
 import {
-    CHAT_GUARDIAN_SCENARIOS,
-    findScenarioIndexByContactName,
+  CHAT_GUARDIAN_SCENARIOS,
+  findScenarioIndexByContactName,
 } from "../data/chatGuardianData";
 import { getOrCreateQuiz } from "../data/quizCatalog";
 import type { QuizDifficulty } from "../data/quizCatalogData";
@@ -44,6 +45,9 @@ export function ChatGuardianQuizScreen({
     [requestedQuizId, selectedDifficulty, t],
   );
 
+  const { colors } = useAppTheme();
+
+  const styles = useMemo(() => createStyles(colors), [colors]);
   // Use custom hooks for state management
   const quizCore = useQuizCore(quizDefinition, userId);
   const quizSubmission = useQuizSubmission(
@@ -186,91 +190,92 @@ export function ChatGuardianQuizScreen({
   );
 }
 
-const styles = StyleSheet.create({
-  questionCard: {
-    borderRadius: scale(16),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: moderateScale(14),
-    gap: moderateScale(12),
-  },
-  warningText: {
-    marginTop: moderateScale(8),
-    color: "#ffb9b9",
-    fontSize: normalizeFont(12),
-    lineHeight: verticalScale(18),
-  },
-  resultValue: {
-    color: colors.accent,
-    fontSize: normalizeFont(40),
-    fontWeight: "900",
-    letterSpacing: -0.6,
-  },
-  resultBody: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(15),
-    lineHeight: verticalScale(21),
-  },
-  syncStatus: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(12),
-    lineHeight: verticalScale(18),
-  },
-  primaryButton: {
-    borderRadius: scale(12),
-    backgroundColor: colors.accent,
-    paddingVertical: moderateScale(12),
-    alignItems: "center",
-    shadowColor: colors.accent,
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 4,
-  },
-  primaryButtonText: {
-    color: colors.background,
-    fontSize: normalizeFont(15),
-    fontWeight: "800",
-    letterSpacing: moderateScale(0.2),
-  },
-  feedbackCard: {
-    borderRadius: scale(12),
-    borderWidth: scale(2),
-    padding: moderateScale(12),
-    gap: moderateScale(6),
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
-  },
-  feedbackCardSuccess: {
-    borderColor: "#22c55e",
-    backgroundColor: "#166534",
-  },
-  feedbackCardError: {
-    borderColor: "#ef4444",
-    backgroundColor: "#7f1d1d",
-  },
-  feedbackTitle: {
-    color: "#ffffff",
-    fontSize: normalizeFont(13),
-    fontWeight: "800",
-    letterSpacing: moderateScale(0.2),
-  },
-  feedbackBody: {
-    color: "#e8f5e9",
-    fontSize: normalizeFont(13),
-    lineHeight: verticalScale(19),
-  },
-  autoNextLabel: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(12),
-    fontWeight: "700",
-    letterSpacing: moderateScale(0.2),
-  },
-});
+const createStyles = (colors: AppThemeColors) =>
+  StyleSheet.create({
+    questionCard: {
+      borderRadius: scale(16),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      padding: moderateScale(14),
+      gap: moderateScale(12),
+    },
+    warningText: {
+      marginTop: moderateScale(8),
+      color: "#ffb9b9",
+      fontSize: normalizeFont(12),
+      lineHeight: verticalScale(18),
+    },
+    resultValue: {
+      color: colors.accent,
+      fontSize: normalizeFont(40),
+      fontWeight: "900",
+      letterSpacing: -0.6,
+    },
+    resultBody: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(15),
+      lineHeight: verticalScale(21),
+    },
+    syncStatus: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(12),
+      lineHeight: verticalScale(18),
+    },
+    primaryButton: {
+      borderRadius: scale(12),
+      backgroundColor: colors.accent,
+      paddingVertical: moderateScale(12),
+      alignItems: "center",
+      shadowColor: colors.accent,
+      shadowOpacity: 0.2,
+      shadowRadius: 6,
+      shadowOffset: { width: 0, height: 2 },
+      elevation: 4,
+    },
+    primaryButtonText: {
+      color: colors.background,
+      fontSize: normalizeFont(15),
+      fontWeight: "800",
+      letterSpacing: moderateScale(0.2),
+    },
+    feedbackCard: {
+      borderRadius: scale(12),
+      borderWidth: scale(2),
+      padding: moderateScale(12),
+      gap: moderateScale(6),
+      shadowColor: "#000",
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      shadowOffset: { width: 0, height: 2 },
+      elevation: 3,
+    },
+    feedbackCardSuccess: {
+      borderColor: "#22c55e",
+      backgroundColor: "#166534",
+    },
+    feedbackCardError: {
+      borderColor: "#ef4444",
+      backgroundColor: "#7f1d1d",
+    },
+    feedbackTitle: {
+      color: "#ffffff",
+      fontSize: normalizeFont(13),
+      fontWeight: "800",
+      letterSpacing: moderateScale(0.2),
+    },
+    feedbackBody: {
+      color: "#e8f5e9",
+      fontSize: normalizeFont(13),
+      lineHeight: verticalScale(19),
+    },
+    autoNextLabel: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(12),
+      fontWeight: "700",
+      letterSpacing: moderateScale(0.2),
+    },
+  });
 
 // Placeholder for local state to fix the error
 function setCurrentIndex(_index: number) {

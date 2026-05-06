@@ -1,4 +1,5 @@
 import { MaterialIcons } from "@expo/vector-icons";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
     Pressable,
@@ -15,13 +16,17 @@ import {
     verticalScale,
 } from "../../../lib/responsive";
 import { useSettings, type ThemeMode } from "../../../lib/settings";
-import { colors } from "../../../theme/colors";
-import { typography } from "../../../theme/typography";
+import { useAppTheme } from "../../../theme/useAppTheme";
 
 export function SettingsModal() {
   const { t } = useTranslation();
   const tSettings = (key: string) => t(`settings.${key}`);
   const { settings, setSoundEnabled, setThemeMode } = useSettings();
+  const { colors, typography } = useAppTheme();
+  const styles = useMemo(
+    () => createStyles(colors, typography),
+    [colors, typography],
+  );
 
   const themeOptions: Array<{ value: ThemeMode; label: string }> = [
     { value: "auto", label: tSettings("themeAuto") },
@@ -108,92 +113,93 @@ export function SettingsModal() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  content: {
-    paddingVertical: verticalScale(20),
-    paddingHorizontal: scale(16),
-    paddingBottom: verticalScale(40),
-  },
-  title: {
-    ...typography.screenTitle,
-    marginBottom: verticalScale(32),
-    textAlign: "center",
-  },
-  section: {
-    marginBottom: verticalScale(32),
-    paddingHorizontal: scale(4),
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: verticalScale(16),
-  },
-  sectionIcon: {
-    marginRight: scale(12),
-  },
-  sectionTitle: {
-    ...typography.sectionTitle,
-    flex: 1,
-  },
-  settingItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: verticalScale(12),
-    paddingHorizontal: scale(12),
-    backgroundColor: colors.surface,
-    borderRadius: moderateScale(8),
-    marginBottom: verticalScale(12),
-  },
-  settingLabel: {
-    flex: 1,
-    marginRight: scale(12),
-  },
-  settingText: {
-    ...typography.body,
-    color: colors.text,
-    fontWeight: "500",
-  },
-  settingDescription: {
-    ...typography.body,
-    color: colors.textMuted,
-    marginBottom: verticalScale(12),
-  },
-  themeOptions: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: scale(12),
-  },
-  themeOption: {
-    flex: 1,
-    minWidth: scale(90),
-    paddingVertical: verticalScale(12),
-    paddingHorizontal: scale(12),
-    borderRadius: moderateScale(8),
-    borderWidth: 2,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  themeOptionActive: {
-    borderColor: colors.accent,
-    backgroundColor: colors.surfaceSoft,
-  },
-  themeCheckmark: {
-    marginRight: scale(6),
-  },
-  themeOptionLabel: {
-    ...typography.body,
-    color: colors.text,
-    fontWeight: "600",
-  },
-  themeOptionLabelActive: {
-    color: colors.accent,
-  },
-});
+const createStyles = (colors: any, typography: any) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    content: {
+      paddingVertical: verticalScale(20),
+      paddingHorizontal: scale(16),
+      paddingBottom: verticalScale(40),
+    },
+    title: {
+      ...typography.screenTitle,
+      marginBottom: verticalScale(32),
+      textAlign: "center",
+    },
+    section: {
+      marginBottom: verticalScale(32),
+      paddingHorizontal: scale(4),
+    },
+    sectionHeader: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: verticalScale(16),
+    },
+    sectionIcon: {
+      marginRight: scale(12),
+    },
+    sectionTitle: {
+      ...typography.sectionTitle,
+      flex: 1,
+    },
+    settingItem: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      paddingVertical: verticalScale(12),
+      paddingHorizontal: scale(12),
+      backgroundColor: colors.surface,
+      borderRadius: moderateScale(8),
+      marginBottom: verticalScale(12),
+    },
+    settingLabel: {
+      flex: 1,
+      marginRight: scale(12),
+    },
+    settingText: {
+      ...typography.body,
+      color: colors.text,
+      fontWeight: "500",
+    },
+    settingDescription: {
+      ...typography.body,
+      color: colors.textMuted,
+      marginBottom: verticalScale(12),
+    },
+    themeOptions: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: scale(12),
+    },
+    themeOption: {
+      flex: 1,
+      minWidth: scale(90),
+      paddingVertical: verticalScale(12),
+      paddingHorizontal: scale(12),
+      borderRadius: moderateScale(8),
+      borderWidth: 2,
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    themeOptionActive: {
+      borderColor: colors.accent,
+      backgroundColor: colors.surfaceSoft,
+    },
+    themeCheckmark: {
+      marginRight: scale(6),
+    },
+    themeOptionLabel: {
+      ...typography.body,
+      color: colors.text,
+      fontWeight: "600",
+    },
+    themeOptionLabelActive: {
+      color: colors.accent,
+    },
+  });

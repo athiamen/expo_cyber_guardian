@@ -27,8 +27,7 @@ import {
   scale,
   verticalScale,
 } from "../../../lib/responsive";
-import { colors } from "../../../theme/colors";
-import { typography } from "../../../theme/typography";
+import { useAppTheme } from "../../../theme/useAppTheme";
 
 type ProfileScreenProps = {
   token: string;
@@ -43,6 +42,7 @@ export function ProfileScreen({ token, userId, onLogout }: ProfileScreenProps) {
   const router = useRouter();
   const { width: screenWidth } = useWindowDimensions();
   const isMobile = screenWidth < 420;
+  const { colors, typography } = useAppTheme();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [weeklyRecap, setWeeklyRecap] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -182,7 +182,10 @@ export function ProfileScreen({ token, userId, onLogout }: ProfileScreenProps) {
       .join("");
   }, [profile?.fullName]);
 
-  const styles = createStyles(isMobile);
+  const styles = useMemo(
+    () => createStyles(isMobile, colors),
+    [isMobile, colors],
+  );
 
   if (isLoading) {
     return (
@@ -349,10 +352,10 @@ export function ProfileScreen({ token, userId, onLogout }: ProfileScreenProps) {
   );
 }
 
-const createStyles = (isMobile: boolean) =>
+const createStyles = (isMobile: boolean, colors: any) =>
   StyleSheet.create({
     container: {
-      backgroundColor: "#f1f5ff",
+      backgroundColor: colors.background,
     },
     content: {
       position: "relative",
@@ -401,8 +404,8 @@ const createStyles = (isMobile: boolean) =>
     heroCard: {
       borderRadius: scale(24),
       borderWidth: scale(1),
-      borderColor: "#86a6dd",
-      backgroundColor: "#f9fbff",
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
       padding: moderateScale(isMobile ? 14 : 18),
       shadowColor: "#14356f",
       shadowOpacity: 0.14,
@@ -434,8 +437,8 @@ const createStyles = (isMobile: boolean) =>
     heroStatPill: {
       borderRadius: scale(12),
       borderWidth: scale(1),
-      borderColor: "#bcd2f6",
-      backgroundColor: "#ffffff",
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
       paddingVertical: moderateScale(8),
       paddingHorizontal: moderateScale(10),
       alignItems: "center",
@@ -456,8 +459,8 @@ const createStyles = (isMobile: boolean) =>
     heroImageCard: {
       borderRadius: scale(16),
       borderWidth: scale(1),
-      borderColor: "#b6cdf7",
-      backgroundColor: "#ffffff",
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
       padding: moderateScale(10),
     },
     heroImage: {
@@ -467,7 +470,7 @@ const createStyles = (isMobile: boolean) =>
       borderRadius: scale(10),
     },
     errorText: {
-      color: "#ffb9b9",
+      color: colors.error,
       fontSize: normalizeFont(12),
       lineHeight: verticalScale(18),
     },
@@ -477,10 +480,10 @@ const createStyles = (isMobile: boolean) =>
       gap: moderateScale(12),
       borderRadius: scale(18),
       borderWidth: scale(1),
-      borderColor: "#8cb0ec",
-      backgroundColor: "#ffffff",
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
       padding: moderateScale(14),
-      shadowColor: "#173465",
+      shadowColor: colors.text,
       shadowOpacity: 0.1,
       shadowRadius: 10,
       shadowOffset: { width: 0, height: 7 },
@@ -530,12 +533,12 @@ const createStyles = (isMobile: boolean) =>
       flex: 1,
       borderRadius: scale(16),
       borderWidth: scale(1),
-      borderColor: "#8cb0ec",
-      backgroundColor: "#ffffff",
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
       padding: moderateScale(isMobile ? 14 : 12),
       minHeight: isMobile ? verticalScale(80) : "auto",
       justifyContent: "center",
-      shadowColor: "#173465",
+      shadowColor: colors.text,
       shadowOpacity: 0.08,
       shadowRadius: 8,
       shadowOffset: { width: 0, height: 5 },
@@ -547,11 +550,11 @@ const createStyles = (isMobile: boolean) =>
     preferencesCard: {
       borderRadius: scale(18),
       borderWidth: scale(1),
-      borderColor: "#8cb0ec",
-      backgroundColor: "#ffffff",
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
       padding: moderateScale(14),
       gap: moderateScale(12),
-      shadowColor: "#173465",
+      shadowColor: colors.text,
       shadowOpacity: 0.08,
       shadowRadius: 8,
       shadowOffset: { width: 0, height: 5 },
@@ -583,11 +586,11 @@ const createStyles = (isMobile: boolean) =>
     actionsCard: {
       borderRadius: scale(18),
       borderWidth: scale(1),
-      borderColor: "#8cb0ec",
-      backgroundColor: "#ffffff",
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
       padding: moderateScale(14),
       gap: moderateScale(10),
-      shadowColor: "#173465",
+      shadowColor: colors.text,
       shadowOpacity: 0.08,
       shadowRadius: 8,
       shadowOffset: { width: 0, height: 5 },
@@ -596,8 +599,8 @@ const createStyles = (isMobile: boolean) =>
     actionButton: {
       borderRadius: scale(12),
       borderWidth: scale(1),
-      borderColor: "#b6cdf7",
-      backgroundColor: "#edf3ff",
+      borderColor: colors.border,
+      backgroundColor: colors.surfaceSoft,
       paddingVertical: moderateScale(isMobile ? 16 : 12),
       paddingHorizontal: moderateScale(12),
       minHeight: isMobile ? 52 : "auto",
@@ -610,11 +613,11 @@ const createStyles = (isMobile: boolean) =>
       textAlign: "center",
     },
     actionDanger: {
-      borderColor: "#7a2a2a",
-      backgroundColor: "#3f1d1d",
+      borderColor: colors.error,
+      backgroundColor: colors.surfaceSoft,
     },
     actionDangerText: {
-      color: "#ffb9b9",
+      color: colors.error,
       fontSize: normalizeFont(isMobile ? 16 : 14),
       fontWeight: "800",
       textAlign: "center",

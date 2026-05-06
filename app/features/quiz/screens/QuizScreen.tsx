@@ -1,6 +1,6 @@
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
@@ -19,8 +19,7 @@ import {
   verticalScale,
 } from "../../../lib/responsive";
 import { ModulesStackParamList } from "../../../navigation/types";
-import { colors } from "../../../theme/colors";
-import { typography } from "../../../theme/typography";
+import { useAppTheme } from "../../../theme/useAppTheme";
 import type { QuizDifficulty } from "../data/quizCatalogData";
 import { ChatGuardianQuizScreen } from "./ChatGuardianQuizScreen";
 import { ClassicQuizScreen } from "./ClassicQuizScreen";
@@ -50,6 +49,10 @@ export function QuizScreen({ token, userId }: QuizScreenProps) {
   // Quiz type detection
   const isChatGuardianGame = requestedQuizId === "Q4";
   const isFirewallDefenderGame = requestedQuizId === "Q6";
+
+  const { colors, typography } = useAppTheme();
+
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   useEffect(() => {
     setSelectedDifficulty(route.params?.difficulty ?? "easy");
@@ -183,111 +186,112 @@ export function QuizScreen({ token, userId }: QuizScreenProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.background,
-  },
-  content: {
-    paddingHorizontal: moderateScale(24),
-    paddingTop: moderateScale(16),
-    paddingBottom: moderateScale(36),
-    gap: moderateScale(10),
-  },
-  loadingWrap: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    gap: moderateScale(10),
-    backgroundColor: colors.background,
-  },
-  loadingText: {
-    color: colors.textMuted,
-    fontSize: normalizeFont(13),
-    fontWeight: "700",
-  },
-  backButton: {
-    alignSelf: "flex-start",
-    borderRadius: scale(999),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    paddingHorizontal: moderateScale(12),
-    paddingVertical: moderateScale(6),
-  },
-  backButtonText: {
-    color: colors.text,
-    fontSize: normalizeFont(11),
-    fontWeight: "800",
-    textTransform: "uppercase",
-    letterSpacing: moderateScale(0.6),
-  },
-  heroCard: {
-    borderRadius: scale(14),
-    borderWidth: scale(1),
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    paddingHorizontal: moderateScale(12),
-    paddingVertical: moderateScale(10),
-  },
-  heroTextWrap: {
-    flex: 1,
-  },
-  title: {
-    marginTop: 0,
-    fontSize: normalizeFont(24),
-    lineHeight: verticalScale(30),
-  },
-  difficultySelector: {
-    flexDirection: "row",
-    flexWrap: "nowrap",
-    gap: moderateScale(6),
-    marginTop: moderateScale(8),
-    width: "100%",
-  },
-  difficultySelectorPhone: {
-    flexWrap: "wrap",
-    gap: moderateScale(10),
-  },
-  difficultyButton: {
-    flex: 1,
-    borderRadius: 999,
-    borderWidth: scale(1),
-    borderColor: "#d1d5db",
-    backgroundColor: colors.surfaceSoft,
-    paddingHorizontal: moderateScale(6),
-    paddingVertical: moderateScale(6),
-    minHeight: verticalScale(36),
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  difficultyButtonPhone: {
-    minHeight: verticalScale(38),
-    justifyContent: "center",
-    paddingHorizontal: moderateScale(8),
-  },
-  difficultyButtonActive: {
-    backgroundColor: colors.accent,
-    borderColor: colors.accent,
-    borderWidth: scale(2),
-  },
-  difficultyButtonText: {
-    color: colors.text,
-    fontSize: normalizeFont(10),
-    fontWeight: "800",
-    letterSpacing: moderateScale(0.2),
-    textTransform: "uppercase",
-  },
-  difficultyButtonTextPhone: {
-    fontSize: normalizeFont(11),
-  },
-  difficultyButtonTextActive: {
-    color: colors.surface,
-    fontWeight: "900",
-  },
-  warningText: {
-    marginTop: moderateScale(6),
-    color: "#ffb9b9",
-    fontSize: normalizeFont(11),
-    lineHeight: verticalScale(16),
-  },
-});
+const createStyles = (colors: ReturnType<typeof useAppTheme>["colors"]) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: colors.background,
+    },
+    content: {
+      paddingHorizontal: moderateScale(24),
+      paddingTop: moderateScale(16),
+      paddingBottom: moderateScale(36),
+      gap: moderateScale(10),
+    },
+    loadingWrap: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      gap: moderateScale(10),
+      backgroundColor: colors.background,
+    },
+    loadingText: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(13),
+      fontWeight: "700",
+    },
+    backButton: {
+      alignSelf: "flex-start",
+      borderRadius: scale(999),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      paddingHorizontal: moderateScale(12),
+      paddingVertical: moderateScale(6),
+    },
+    backButtonText: {
+      color: colors.text,
+      fontSize: normalizeFont(11),
+      fontWeight: "800",
+      textTransform: "uppercase",
+      letterSpacing: moderateScale(0.6),
+    },
+    heroCard: {
+      borderRadius: scale(14),
+      borderWidth: scale(1),
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      paddingHorizontal: moderateScale(12),
+      paddingVertical: moderateScale(10),
+    },
+    heroTextWrap: {
+      flex: 1,
+    },
+    title: {
+      marginTop: 0,
+      fontSize: normalizeFont(24),
+      lineHeight: verticalScale(30),
+    },
+    difficultySelector: {
+      flexDirection: "row",
+      flexWrap: "nowrap",
+      gap: moderateScale(6),
+      marginTop: moderateScale(8),
+      width: "100%",
+    },
+    difficultySelectorPhone: {
+      flexWrap: "wrap",
+      gap: moderateScale(10),
+    },
+    difficultyButton: {
+      flex: 1,
+      borderRadius: 999,
+      borderWidth: scale(1),
+      borderColor: "#d1d5db",
+      backgroundColor: colors.surfaceSoft,
+      paddingHorizontal: moderateScale(6),
+      paddingVertical: moderateScale(6),
+      minHeight: verticalScale(36),
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    difficultyButtonPhone: {
+      minHeight: verticalScale(38),
+      justifyContent: "center",
+      paddingHorizontal: moderateScale(8),
+    },
+    difficultyButtonActive: {
+      backgroundColor: colors.accent,
+      borderColor: colors.accent,
+      borderWidth: scale(2),
+    },
+    difficultyButtonText: {
+      color: colors.text,
+      fontSize: normalizeFont(10),
+      fontWeight: "800",
+      letterSpacing: moderateScale(0.2),
+      textTransform: "uppercase",
+    },
+    difficultyButtonTextPhone: {
+      fontSize: normalizeFont(11),
+    },
+    difficultyButtonTextActive: {
+      color: colors.surface,
+      fontWeight: "900",
+    },
+    warningText: {
+      marginTop: moderateScale(6),
+      color: "#ffb9b9",
+      fontSize: normalizeFont(11),
+      lineHeight: verticalScale(16),
+    },
+  });
