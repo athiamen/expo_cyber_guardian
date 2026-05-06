@@ -60,3 +60,6 @@ coverage/
 # Local npm
 .pnp.cjs
 .package-lock.json
+
+# Secrets (do not commit service account keys or firebase keys)
+scripts/firebase-key.json
