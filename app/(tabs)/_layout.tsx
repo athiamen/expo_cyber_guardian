@@ -6,6 +6,7 @@ import { Pressable } from "react-native";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
+import { getThemeColors } from "../theme/palette";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -18,11 +19,24 @@ function TabBarIcon(props: {
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const themeKey = (colorScheme ?? "light") as keyof typeof Colors;
+  const themeColors = getThemeColors(colorScheme, colorScheme);
 
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[themeKey].tint,
+        tabBarInactiveTintColor: themeColors.textMuted,
+        tabBarStyle: {
+          backgroundColor: themeColors.surface,
+          borderTopColor: themeColors.border,
+        },
+        sceneStyle: {
+          backgroundColor: themeColors.background,
+        },
+        headerStyle: {
+          backgroundColor: themeColors.surface,
+        },
+        headerTintColor: themeColors.text,
         headerTitleAlign: "center",
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.

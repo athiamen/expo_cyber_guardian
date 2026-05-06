@@ -7,7 +7,9 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput, useWindowDimensions, View
+  TextInput,
+  useWindowDimensions,
+  View,
 } from "react-native";
 import { getApiBaseUrl, getProfileMe, updateProfileMe } from "../../../lib/api";
 import {

@@ -1,3 +1,4 @@
+import { ResizeMode, Video } from "expo-av";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -32,7 +33,9 @@ export function VideosScreen() {
   const playerHeight = isPhone ? 240 : 320;
   const { colors, typography } = useAppTheme();
   const [selectedModule, setSelectedModule] = useState<string | null>(null);
-  const [selectedVideoUrl, setSelectedVideoUrl] = useState<string | null>(null);
+  const [selectedVideoSource, setSelectedVideoSource] = useState<
+    string | number | null
+  >(null);
   const styles = useMemo(
     () => createStyles(colors, typography),
     [colors, typography],
@@ -45,11 +48,30 @@ export function VideosScreen() {
       : VIDEO_CATALOG;
 
   const openVideo = (videoUrl: string) => {
-    setSelectedVideoUrl(videoUrl);
+    setSelectedVideoSource(videoUrl);
   };
 
   const closeVideo = () => {
-    setSelectedVideoUrl(null);
+    setSelectedVideoSource(null);
+  };
+
+  const isYouTubeUrl = (videoUrl: string) => {
+    return /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))/.test(
+      videoUrl,
+    );
+  };
+
+  const normalizeVideoUri = (videoUrl: string) => {
+    if (/^file:\/\//i.test(videoUrl) || /^https?:\/\//i.test(videoUrl)) {
+      return videoUrl;
+    }
+
+    // Convert a Windows absolute path like C:\\Users\\name\\video.mp4 to file:///C:/Users/name/video.mp4
+    if (/^[a-zA-Z]:\\/.test(videoUrl)) {
+      return `file:///${videoUrl.replace(/\\/g, "/")}`;
+    }
+
+    return videoUrl;
   };
 
   const buildYoutubeEmbedUrl = (videoUrl: string) => {
@@ -204,8 +226,13 @@ export function VideosScreen() {
 
   return (
     <View style={styles.container}>
+      <View pointerEvents="none" style={styles.ambientBackground}>
+        <View style={styles.ambientBlobLarge} />
+        <View style={styles.ambientBlobSmall} />
+      </View>
+
       <Modal
-        visible={selectedVideoUrl !== null}
+        visible={selectedVideoSource !== null}
         animationType="slide"
         transparent
         onRequestClose={closeVideo}
@@ -219,9 +246,10 @@ export function VideosScreen() {
               </Pressable>
             </View>
 
-            {selectedVideoUrl ? (
+            {typeof selectedVideoSource === "string" &&
+            isYouTubeUrl(selectedVideoSource) ? (
               <WebView
-                source={{ html: buildYoutubeHtml(selectedVideoUrl) }}
+                source={{ html: buildYoutubeHtml(selectedVideoSource) }}
                 style={[
                   styles.webView,
                   { height: verticalScale(playerHeight) },
@@ -246,6 +274,21 @@ export function VideosScreen() {
                     </Text>
                   </View>
                 )}
+              />
+            ) : selectedVideoSource ? (
+              <Video
+                source={
+                  typeof selectedVideoSource === "number"
+                    ? selectedVideoSource
+                    : { uri: normalizeVideoUri(selectedVideoSource) }
+                }
+                style={[
+                  styles.webView,
+                  { height: verticalScale(playerHeight) },
+                ]}
+                useNativeControls
+                shouldPlay
+                resizeMode={ResizeMode.CONTAIN}
               />
             ) : null}
           </View>
@@ -323,6 +366,31 @@ const createStyles = (colors: any, typography: any) =>
     container: {
       flex: 1,
       backgroundColor: colors.background,
+    },
+    ambientBackground: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      height: verticalScale(220),
+    },
+    ambientBlobLarge: {
+      position: "absolute",
+      top: verticalScale(-70),
+      right: scale(-56),
+      width: scale(220),
+      height: scale(220),
+      borderRadius: scale(999),
+      backgroundColor: "rgba(79, 140, 255, 0.16)",
+    },
+    ambientBlobSmall: {
+      position: "absolute",
+      top: verticalScale(24),
+      left: scale(-52),
+      width: scale(130),
+      height: scale(130),
+      borderRadius: scale(999),
+      backgroundColor: "rgba(245, 158, 11, 0.12)",
     },
     header: {
       paddingHorizontal: moderateScale(20),

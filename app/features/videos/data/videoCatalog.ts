@@ -5,12 +5,12 @@ export type VideoItem = {
   description: string;
   duration: string;
   thumbnailUrl?: string;
-  videoUrl: string;
+  videoUrl: string | number;
   instructor?: string;
   difficulty?: "beginner" | "intermediate" | "advanced";
 };
 
-const DEFAULT_VIDEO_URL = "https://youtu.be/NZ4hnm7vR2o";
+const DEFAULT_VIDEO_URL = require("./video.mp4");
 
 export const VIDEO_CATALOG: VideoItem[] = [
   // Module: Fondamentaux (FOND)
