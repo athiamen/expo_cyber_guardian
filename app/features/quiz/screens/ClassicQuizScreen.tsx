@@ -232,7 +232,7 @@ const createStyles = (
       fontWeight: "700",
     },
     statValueInline: {
-      color: colors.accent,
+      color: colors.text,
       fontWeight: "900",
     },
     progressTrack: {
@@ -266,7 +266,7 @@ const createStyles = (
     },
     warningText: {
       marginTop: moderateScale(8),
-      color: colors.error,
+      color: colors.text,
       fontSize: normalizeFont(12),
       lineHeight: verticalScale(18),
     },
@@ -284,13 +284,13 @@ const createStyles = (
       elevation: 3,
     },
     timeWarningText: {
-      color: colors.onWarningContainer,
+      color: colors.text,
       fontSize: normalizeFont(12),
       fontWeight: "800",
       lineHeight: verticalScale(18),
     },
     resultValue: {
-      color: colors.accent,
+      color: colors.text,
       fontSize: normalizeFont(40),
       fontWeight: "900",
       letterSpacing: -0.6,
@@ -317,9 +317,16 @@ const createStyles = (
       elevation: 4,
     },
     primaryButtonText: {
-      color: colors.accent,
+      color: colors.text,
       fontSize: normalizeFont(15),
       fontWeight: "800",
       letterSpacing: moderateScale(0.2),
+    },
+    autoNextLabel: {
+      color: colors.textMuted,
+      fontSize: normalizeFont(13),
+      fontWeight: "600",
+      textAlign: "center",
+      marginVertical: moderateScale(8),
     },
   });

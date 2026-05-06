@@ -279,7 +279,7 @@ const createStyles = (
       fontSize: normalizeFont(11),
     },
     difficultyButtonTextActive: {
-      color: colors.accent,
+      color: "#ffffff",
       fontWeight: "900",
     },
     warningText: {

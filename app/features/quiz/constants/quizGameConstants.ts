@@ -14,9 +14,9 @@ export const TIME_PER_DIFFICULTY: Record<QuizDifficulty, number> = {
 };
 
 export const LEVEL_LABELS: Record<QuizDifficulty, string> = {
-  easy: "Debutant",
-  medium: "Intermediaire",
-  hard: "Expert",
+  easy: "débutant",
+  medium: "moyen",
+  hard: "expert",
 };
 
 export const QUESTION_EVENTS: Record<string, QuestionEvent> = {

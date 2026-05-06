@@ -99,6 +99,7 @@ export function QuizClassicView({
                 style={[
                   localStyles.optionText,
                   isSelected && localStyles.optionTextSelected,
+                  showWrongSelected && localStyles.optionTextWrong,
                 ]}
               >
                 {option}
@@ -111,18 +112,18 @@ export function QuizClassicView({
       {currentExplanation ? (
         <View
           style={[
-            styles.feedbackCard,
+            localStyles.feedbackCard,
             isCurrentAnswerCorrect
-              ? styles.feedbackCardSuccess
-              : styles.feedbackCardError,
+              ? localStyles.feedbackCardSuccess
+              : localStyles.feedbackCardError,
           ]}
         >
-          <Text style={styles.feedbackTitle}>
+          <Text style={localStyles.feedbackTitle}>
             {isCurrentAnswerCorrect
               ? tQuiz("correctAnswerTitle")
               : tQuiz("wrongAnswerTitle")}
           </Text>
-          <Text style={styles.feedbackBody}>{currentExplanation}</Text>
+          <Text style={localStyles.feedbackBody}>{currentExplanation}</Text>
         </View>
       ) : null}
 
@@ -134,7 +135,7 @@ export function QuizClassicView({
 
       {selectedForCurrent !== undefined ? (
         <Pressable onPress={onNextQuestion} style={styles.primaryButton}>
-          <Text style={styles.primaryButtonText}>
+          <Text style={[styles.primaryButtonText, { color: colors.text }]}>
             {isLastQuestion ? tQuiz("showResult") : tQuiz("nextQuestion")}
           </Text>
         </Pressable>
@@ -270,19 +271,19 @@ const createLocalStyles = (colors: AppThemeColors) =>
     optionIndexSelected: {
       borderColor: colors.accent,
       borderWidth: 3,
-      color: colors.background,
+      color: colors.text,
       backgroundColor: colors.accent,
     },
     optionIndexCorrect: {
       borderColor: colors.quizItemCompletedBorder,
       borderWidth: 3,
-      color: colors.background,
+      color: colors.text,
       backgroundColor: colors.quizItemCompletedBorder,
     },
     optionIndexWrong: {
       borderColor: colors.error,
       borderWidth: 3,
-      color: colors.background,
+      color: colors.text,
       backgroundColor: colors.error,
     },
     optionText: {
@@ -292,7 +293,11 @@ const createLocalStyles = (colors: AppThemeColors) =>
       lineHeight: 22,
     },
     optionTextSelected: {
-      color: colors.background,
+      color: colors.text,
+      fontWeight: "700",
+    },
+    optionTextWrong: {
+      color: colors.text,
       fontWeight: "700",
     },
     feedbackCard: {
@@ -312,16 +317,16 @@ const createLocalStyles = (colors: AppThemeColors) =>
     },
     feedbackCardError: {
       borderColor: colors.error,
-      backgroundColor: colors.surfaceSoft,
+      backgroundColor: colors.error,
     },
     feedbackTitle: {
-      color: colors.text,
+      color: "#ffffff",
       fontSize: 14,
       fontWeight: "800",
       letterSpacing: 0.2,
     },
     feedbackBody: {
-      color: colors.textMuted,
+      color: "#ffffff",
       fontSize: 14,
       lineHeight: 21,
     },

@@ -187,7 +187,7 @@ export function FirewallDefenderView({
                 selectable={false}
                 style={firewallStyles.firewallControlText}
               >
-                🔁 Recommencer
+                🔁 Rejouer
               </Text>
             </Pressable>
           </View>

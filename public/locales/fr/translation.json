@@ -146,6 +146,9 @@
     "restart": "Recommencer le quiz",
     "correctAnswerTitle": "Bonne réponse",
     "wrongAnswerTitle": "Mauvaise réponse",
+    "easy": "débutant",
+    "medium": "moyen",
+    "hard": "expert",
     "chooseAnswer": "Choisissez une réponse",
     "readExplanation": "Lisez l'explication puis continuez",
     "showResult": "Voir mon résultat",
@@ -221,7 +224,7 @@
     "soundDescription": "Activer les effets sonores",
     "themeTitle": "Thème",
     "themeDescription": "Choisissez votre thème préféré",
-    "themeAuto": "Automatique",
+    "themeAuto": "Auto",
     "themeLight": "Clair",
     "themeDark": "Sombre"
   }

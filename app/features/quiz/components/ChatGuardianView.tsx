@@ -274,7 +274,7 @@ export function ChatGuardianView({
                   },
                   showWrongSelected && {
                     borderColor: colors.error,
-                    backgroundColor: colors.surfaceSoft,
+                    backgroundColor: colors.error,
                   },
                 ]}
                 disabled={selectedForCurrent !== undefined}
@@ -286,7 +286,9 @@ export function ChatGuardianView({
                   style={[
                     typography.cardTitle,
                     styles.actionTitle,
-                    { color: colors.text },
+                    showWrongSelected || isSelected || showCorrectOption
+                      ? { color: colors.text }
+                      : { color: colors.text },
                   ]}
                 >
                   {option}
@@ -295,7 +297,9 @@ export function ChatGuardianView({
                   style={[
                     typography.cardMeta,
                     styles.actionHint,
-                    { color: colors.textMuted },
+                    showWrongSelected || isSelected || showCorrectOption
+                      ? { color: colors.text }
+                      : { color: colors.textMuted },
                   ]}
                 >
                   {actionMeta?.hint ?? ""}
@@ -316,17 +320,31 @@ export function ChatGuardianView({
                     borderColor: colors.quizItemCompletedBorder,
                   }
                 : {
-                    backgroundColor: colors.surfaceSoft,
+                    backgroundColor: colors.error,
                     borderColor: colors.error,
                   },
             ]}
           >
-            <Text style={[typography.sectionTitle, { color: colors.text }]}>
+            <Text
+              style={[
+                typography.sectionTitle,
+                {
+                  color: "#ffffff",
+                },
+              ]}
+            >
               {isCurrentAnswerCorrect
                 ? tQuiz("correctAnswerTitle")
                 : tQuiz("wrongAnswerTitle")}
             </Text>
-            <Text style={[typography.body, { color: colors.textMuted }]}>
+            <Text
+              style={[
+                typography.body,
+                {
+                  color: "#ffffff",
+                },
+              ]}
+            >
               {currentExplanation}
             </Text>
           </View>
@@ -348,7 +366,7 @@ export function ChatGuardianView({
               { backgroundColor: colors.accent, shadowColor: colors.accent },
             ]}
           >
-            <Text style={[typography.statValue, { color: colors.background }]}>
+            <Text style={[typography.statValue, { color: colors.text }]}>
               {isLastQuestion ? tQuiz("showResult") : tQuiz("nextQuestion")}
             </Text>
           </Pressable>
