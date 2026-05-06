@@ -8,13 +8,13 @@ export function useColorScheme(): "light" | "dark" {
 
   return useSyncExternalStore(
     subscribeToSettings,
-    () =>
-      getSettingsSnapshot().themeMode === "auto"
-        ? (deviceColorScheme ?? "light")
-        : getSettingsSnapshot().themeMode,
-    () =>
-      getSettingsSnapshot().themeMode === "auto"
-        ? "light"
-        : getSettingsSnapshot().themeMode,
+    () => {
+      const themeMode = getSettingsSnapshot().themeMode;
+      return themeMode === "auto" ? (deviceColorScheme ?? "light") : themeMode;
+    },
+    () => {
+      const themeMode = getSettingsSnapshot().themeMode;
+      return themeMode === "auto" ? "light" : themeMode;
+    },
   );
 }

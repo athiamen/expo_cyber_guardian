@@ -1,5 +1,7 @@
+import { useMemo } from "react";
 import type { LayoutChangeEvent, PanResponderInstance } from "react-native";
 import { Pressable, Text, View } from "react-native";
+import { useAppTheme } from "../../../theme/useAppTheme";
 import type { QuizDifficulty } from "../data/quizCatalogData";
 import {
   FIREWALL_LEVEL_LABELS,
@@ -7,7 +9,7 @@ import {
   type FirewallPowerUpType,
 } from "../firewall/firewallGame";
 import type { FirewallGameStats } from "../hooks/useFirewallAnimationLoop";
-import { firewallStyles } from "./FirewallDefenderStyles";
+import { createFirewallStyles } from "./FirewallDefenderStyles";
 
 type FirewallInventoryItem = {
   key: string;
@@ -86,6 +88,9 @@ export function FirewallDefenderView({
   firewallGameStats,
   showPirate = true,
 }: FirewallDefenderViewProps) {
+  const { colors } = useAppTheme();
+  const firewallStyles = useMemo(() => createFirewallStyles(colors), [colors]);
+
   return (
     <View
       style={[

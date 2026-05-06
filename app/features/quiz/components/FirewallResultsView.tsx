@@ -1,6 +1,7 @@
 import { Pressable, Text, View } from "react-native";
+import { useAppTheme } from "../../../theme/useAppTheme";
 import type { FirewallGameStats } from "../hooks/useFirewallAnimationLoop";
-import { firewallStyles } from "./FirewallDefenderStyles";
+import { createFirewallStyles } from "./FirewallDefenderStyles";
 
 type FirewallResultsViewProps = {
   isVisible: boolean;
@@ -19,13 +20,20 @@ export function FirewallResultsView({
   onClose,
   onRestart,
 }: FirewallResultsViewProps) {
+  const { colors, typography } = useAppTheme();
+  const firewallStyles = createFirewallStyles(colors);
+
   if (!isVisible) {
     return null;
   }
 
   const accuracy = gameStats.accuracy || 0;
   const successColor =
-    accuracy >= 70 ? "#10b981" : accuracy >= 50 ? "#f59e0b" : "#ef4444";
+    accuracy >= 70
+      ? colors.quizItemCompletedBorder
+      : accuracy >= 50
+        ? colors.warning
+        : colors.error;
 
   return (
     <View style={firewallStyles.firewallPauseOverlay}>
@@ -46,7 +54,11 @@ export function FirewallResultsView({
           <View style={{ alignItems: "center", gap: 4, width: "100%" }}>
             <Text
               selectable={false}
-              style={[firewallStyles.firewallStatsTitle, { fontSize: 24 }]}
+              style={[
+                firewallStyles.firewallStatsTitle,
+                typography.sectionTitle,
+                { fontSize: 24 },
+              ]}
             >
               🏆 Score
             </Text>
@@ -54,7 +66,7 @@ export function FirewallResultsView({
               selectable={false}
               style={[
                 firewallStyles.firewallStatValue,
-                { fontSize: 32, color: "#3b82f6" },
+                { fontSize: 32, color: colors.accent },
               ]}
             >
               {finalScore}
@@ -63,7 +75,7 @@ export function FirewallResultsView({
 
           {/* Divider */}
           <View
-            style={{ height: 1, backgroundColor: "#e5e7eb", width: "100%" }}
+            style={{ height: 1, backgroundColor: colors.border, width: "100%" }}
           />
 
           {/* Stats grid */}
@@ -98,7 +110,10 @@ export function FirewallResultsView({
               </Text>
               <Text
                 selectable={false}
-                style={[firewallStyles.firewallStatValue, { color: "#ef4444" }]}
+                style={[
+                  firewallStyles.firewallStatValue,
+                  { color: colors.error },
+                ]}
               >
                 {gameStats.totalLeaked}
               </Text>
@@ -128,7 +143,10 @@ export function FirewallResultsView({
               </Text>
               <Text
                 selectable={false}
-                style={[firewallStyles.firewallStatValue, { color: "#fbbf24" }]}
+                style={[
+                  firewallStyles.firewallStatValue,
+                  { color: colors.warning },
+                ]}
               >
                 x{gameStats.maxCombo}
               </Text>
@@ -140,7 +158,10 @@ export function FirewallResultsView({
               </Text>
               <Text
                 selectable={false}
-                style={[firewallStyles.firewallStatValue, { color: "#ec4899" }]}
+                style={[
+                  firewallStyles.firewallStatValue,
+                  { color: colors.accent },
+                ]}
               >
                 {finalLives}
               </Text>
@@ -154,7 +175,11 @@ export function FirewallResultsView({
             <>
               <Text
                 selectable={false}
-                style={[firewallStyles.firewallPauseTitle, { fontSize: 18 }]}
+                style={[
+                  firewallStyles.firewallPauseTitle,
+                  typography.sectionTitle,
+                  { fontSize: 18 },
+                ]}
               >
                 🌟 Excellent!
               </Text>
@@ -170,7 +195,11 @@ export function FirewallResultsView({
             <>
               <Text
                 selectable={false}
-                style={[firewallStyles.firewallPauseTitle, { fontSize: 18 }]}
+                style={[
+                  firewallStyles.firewallPauseTitle,
+                  typography.sectionTitle,
+                  { fontSize: 18 },
+                ]}
               >
                 👍 Très bien!
               </Text>
@@ -186,7 +215,11 @@ export function FirewallResultsView({
             <>
               <Text
                 selectable={false}
-                style={[firewallStyles.firewallPauseTitle, { fontSize: 18 }]}
+                style={[
+                  firewallStyles.firewallPauseTitle,
+                  typography.sectionTitle,
+                  { fontSize: 18 },
+                ]}
               >
                 💪 À refaire!
               </Text>
@@ -205,7 +238,7 @@ export function FirewallResultsView({
           <Pressable
             style={[
               firewallStyles.firewallControlButton,
-              { flex: 1, backgroundColor: "#f3f4f6" },
+              { flex: 1, backgroundColor: colors.surfaceSoft },
             ]}
             onPress={onClose}
           >
@@ -217,7 +250,11 @@ export function FirewallResultsView({
             style={[
               firewallStyles.firewallControlButton,
               firewallStyles.firewallControlPrimary,
-              { flex: 1 },
+              {
+                flex: 1,
+                backgroundColor: colors.accent,
+                borderColor: colors.accent,
+              },
             ]}
             onPress={onRestart}
           >

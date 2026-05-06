@@ -46,19 +46,19 @@ export function QuizScreen({ token, userId }: QuizScreenProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Quiz type detection
   const isChatGuardianGame = requestedQuizId === "Q4";
   const isFirewallDefenderGame = requestedQuizId === "Q6";
 
   const { colors, typography } = useAppTheme();
-
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const styles = useMemo(
+    () => createStyles(colors, typography),
+    [colors, typography],
+  );
 
   useEffect(() => {
     setSelectedDifficulty(route.params?.difficulty ?? "easy");
   }, [requestedQuizId, route.params?.difficulty]);
 
-  // Load quiz metadata
   useEffect(() => {
     let isMounted = true;
 
@@ -68,23 +68,16 @@ export function QuizScreen({ token, userId }: QuizScreenProps) {
 
       try {
         await getQuizByCode(requestedQuizId);
-        if (!isMounted) {
-          return;
-        }
+        if (!isMounted) return;
       } catch (error) {
-        if (!isMounted) {
-          return;
-        }
-
+        if (!isMounted) return;
         const message =
           error instanceof Error ? error.message : tQuiz("loadError");
         setErrorMessage(
           `${message} (API: ${getApiBaseUrl()}). ${tQuiz("localDataUsed")}`,
         );
       } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
+        if (isMounted) setIsLoading(false);
       }
     }
 
@@ -108,8 +101,6 @@ export function QuizScreen({ token, userId }: QuizScreenProps) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {/* Back button removed at quiz start */}
-
       <View style={styles.heroCard}>
         <View style={styles.heroTextWrap}>
           <Text style={[typography.screenTitle, styles.title]}>
@@ -126,10 +117,10 @@ export function QuizScreen({ token, userId }: QuizScreenProps) {
                 const isActive = selectedDifficulty === difficulty;
                 const label =
                   difficulty === "easy"
-                    ? "Facile"
+                    ? tQuiz("easy")
                     : difficulty === "medium"
-                      ? "Moyen"
-                      : "Difficile";
+                      ? tQuiz("medium")
+                      : tQuiz("hard");
 
                 return (
                   <Pressable
@@ -186,7 +177,10 @@ export function QuizScreen({ token, userId }: QuizScreenProps) {
   );
 }
 
-const createStyles = (colors: ReturnType<typeof useAppTheme>["colors"]) =>
+const createStyles = (
+  colors: ReturnType<typeof useAppTheme>["colors"],
+  typography: ReturnType<typeof useAppTheme>["typography"],
+) =>
   StyleSheet.create({
     container: {
       backgroundColor: colors.background,
@@ -256,7 +250,7 @@ const createStyles = (colors: ReturnType<typeof useAppTheme>["colors"]) =>
       flex: 1,
       borderRadius: 999,
       borderWidth: scale(1),
-      borderColor: "#d1d5db",
+      borderColor: colors.border,
       backgroundColor: colors.surfaceSoft,
       paddingHorizontal: moderateScale(6),
       paddingVertical: moderateScale(6),
@@ -285,12 +279,12 @@ const createStyles = (colors: ReturnType<typeof useAppTheme>["colors"]) =>
       fontSize: normalizeFont(11),
     },
     difficultyButtonTextActive: {
-      color: colors.surface,
+      color: colors.accent,
       fontWeight: "900",
     },
     warningText: {
       marginTop: moderateScale(6),
-      color: "#ffb9b9",
+      color: colors.error,
       fontSize: normalizeFont(11),
       lineHeight: verticalScale(16),
     },

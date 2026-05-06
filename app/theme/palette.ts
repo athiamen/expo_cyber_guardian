@@ -1,6 +1,13 @@
+import { ColorValue } from "react-native";
 import type { ThemeMode } from "../lib/settings";
 
 export type AppThemeColors = {
+  errorContainer: ColorValue | undefined;
+  success: ColorValue | undefined;
+  successContainer: ColorValue | undefined;
+  accentContainer: ColorValue | undefined;
+  onWarningContainer: any;
+  warningContainer: any;
   background: string;
   surface: string;
   surfaceSoft: string;
@@ -56,6 +63,12 @@ export const lightColors: AppThemeColors = {
   quizButtonCompletedBorder: "#34D399",
   quizButtonCompletedText: "#02153b",
   quizButtonLockedText: "#02153b",
+  onWarningContainer: undefined,
+  warningContainer: undefined,
+  errorContainer: undefined,
+  success: undefined,
+  successContainer: undefined,
+  accentContainer: undefined,
 };
 
 export const darkColors: AppThemeColors = {
@@ -64,7 +77,7 @@ export const darkColors: AppThemeColors = {
   surfaceSoft: "#142033",
   text: "#f5f7fb",
   textSecondary: "#cdd8ea",
-  textMuted: "#9eb1cb",
+  textMuted: "#b2c2d8",
   accent: "#6ea8ff",
   warning: "#fbbf24",
   border: "#2e4364",
@@ -85,6 +98,12 @@ export const darkColors: AppThemeColors = {
   quizButtonCompletedBorder: "#34D399",
   quizButtonCompletedText: "#f5f7fb",
   quizButtonLockedText: "#f5f7fb",
+  onWarningContainer: undefined,
+  warningContainer: undefined,
+  errorContainer: undefined,
+  success: undefined,
+  successContainer: undefined,
+  accentContainer: undefined,
 };
 
 export function getThemeColors(

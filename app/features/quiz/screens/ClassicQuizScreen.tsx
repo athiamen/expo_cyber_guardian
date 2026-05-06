@@ -35,22 +35,22 @@ export function ClassicQuizScreen({
   const tQuiz = (key: string, options?: Record<string, unknown>) =>
     t(`quiz.${key}`, options);
 
-  // Load quiz definition
   const quizDefinition = useMemo(
     () => getOrCreateQuiz(requestedQuizId, t, selectedDifficulty),
     [requestedQuizId, selectedDifficulty, t],
   );
 
-  // Get time per question based on difficulty
   const { timePerQuestion } = useDifficultySettings(
     selectedDifficulty,
     "classic",
   );
 
   const { colors, typography } = useAppTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const styles = useMemo(
+    () => createStyles(colors, typography),
+    [colors, typography],
+  );
 
-  // Use custom hooks for state management
   const quizCore = useQuizCore(quizDefinition, userId);
   const quizTimer = useQuizTimer(
     timePerQuestion,
@@ -64,7 +64,6 @@ export function ClassicQuizScreen({
     token,
   );
 
-  // Derived state
   const currentQuestion = quizDefinition.questions[quizCore.currentIndex];
   const currentQuestionEvent = currentQuestion
     ? QUESTION_EVENTS[currentQuestion.id]
@@ -87,7 +86,6 @@ export function ClassicQuizScreen({
     : false;
   const currentLevelLabel = LEVEL_LABELS[selectedDifficulty];
 
-  // Show time warning when time runs out
   const showTimeWarning =
     quizTimer.timeWarningMessage && selectedForCurrent === undefined;
 
@@ -202,7 +200,11 @@ export function ClassicQuizScreen({
     </>
   );
 }
-const createStyles = (colors: ReturnType<typeof useAppTheme>["colors"]) =>
+
+const createStyles = (
+  colors: ReturnType<typeof useAppTheme>["colors"],
+  typography: ReturnType<typeof useAppTheme>["typography"],
+) =>
   StyleSheet.create({
     statsBar: {
       borderRadius: scale(16),
@@ -230,7 +232,7 @@ const createStyles = (colors: ReturnType<typeof useAppTheme>["colors"]) =>
       fontWeight: "700",
     },
     statValueInline: {
-      color: colors.text,
+      color: colors.accent,
       fontWeight: "900",
     },
     progressTrack: {
@@ -264,25 +266,25 @@ const createStyles = (colors: ReturnType<typeof useAppTheme>["colors"]) =>
     },
     warningText: {
       marginTop: moderateScale(8),
-      color: "#ffb9b9",
+      color: colors.error,
       fontSize: normalizeFont(12),
       lineHeight: verticalScale(18),
     },
     timeWarningCard: {
       borderRadius: scale(10),
       borderWidth: scale(2),
-      borderColor: "#fbbf24",
-      backgroundColor: "#78350f",
+      borderColor: colors.warning,
+      backgroundColor: colors.warningContainer,
       paddingHorizontal: moderateScale(10),
       paddingVertical: moderateScale(8),
-      shadowColor: "#fbbf24",
+      shadowColor: colors.warning,
       shadowOpacity: 0.2,
       shadowRadius: 4,
       shadowOffset: { width: 0, height: 2 },
       elevation: 3,
     },
     timeWarningText: {
-      color: "#fef3c7",
+      color: colors.onWarningContainer,
       fontSize: normalizeFont(12),
       fontWeight: "800",
       lineHeight: verticalScale(18),
@@ -315,7 +317,7 @@ const createStyles = (colors: ReturnType<typeof useAppTheme>["colors"]) =>
       elevation: 4,
     },
     primaryButtonText: {
-      color: colors.background,
+      color: colors.accent,
       fontSize: normalizeFont(15),
       fontWeight: "800",
       letterSpacing: moderateScale(0.2),

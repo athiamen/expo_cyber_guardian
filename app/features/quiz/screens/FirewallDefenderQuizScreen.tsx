@@ -1,7 +1,11 @@
-import { AppThemeColors } from "@/app/theme/palette";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import {
+  moderateScale,
+  normalizeFont,
+  verticalScale
+} from "../../../lib/responsive";
 import { useAppTheme } from "../../../theme/useAppTheme";
 import { FirewallDefenderView } from "../components/FirewallDefenderView";
 import { FirewallResultsView } from "../components/FirewallResultsView";
@@ -35,24 +39,21 @@ export function FirewallDefenderQuizScreen({
   const [showResults, setShowResults] = useState(false);
   const [showPirate, setShowPirate] = useState(true);
 
-  // Load quiz definition
   const quizDefinition = useMemo(
     () => getOrCreateQuiz(requestedQuizId, t, selectedDifficulty),
     [requestedQuizId, selectedDifficulty, t],
   );
 
-  // Get time per question based on difficulty (firewall has different times)
   const { timePerQuestion } = useDifficultySettings(
     selectedDifficulty,
     "firewall",
   );
   const { colors, typography } = useAppTheme();
-
   const styles = useMemo(
     () => createStyles(colors, typography),
     [colors, typography],
   );
-  // Use custom hooks for state management
+
   const quizCore = useQuizCore(quizDefinition, userId);
   const quizFirewall = useFirewallAnimationLoop(
     selectedDifficulty,
@@ -64,10 +65,8 @@ export function FirewallDefenderQuizScreen({
     quizFirewall.firewallGamePaused,
   );
 
-  // Derived state
   const currentQuestion = quizDefinition.questions[quizCore.currentIndex];
 
-  // Firewall-specific calculations
   const firewallMistakes = Math.max(0, quizCore.answeredCount - quizCore.score);
   const quizShieldPct = Math.max(0, 100 - firewallMistakes * 20);
   const firewallShieldPct = quizFirewall.firewallGameRunning
@@ -113,32 +112,37 @@ export function FirewallDefenderQuizScreen({
     h: 80,
   };
 
-  // Hide pirate after 5 seconds of game start
   useEffect(() => {
     if (!quizFirewall.firewallGameRunning) {
       setShowPirate(true);
       return;
     }
 
-    const pirateTImerId = setTimeout(() => {
+    const pirateTimerId = setTimeout(() => {
       setShowPirate(false);
     }, 5000);
 
-    return () => clearTimeout(pirateTImerId);
+    return () => clearTimeout(pirateTimerId);
   }, [quizFirewall.firewallGameRunning]);
 
   if (quizCore.quizCompleted) {
     return (
-      <View>
-        <Text>{tQuiz("finalResultEyebrow")}</Text>
-        <Text>{quizCore.successRate}%</Text>
-        <Text>Quiz completed!</Text>
+      <View style={styles.resultsContainer}>
+        <Text style={[typography.eyebrowWarning, styles.resultEyebrow]}>
+          {tQuiz("finalResultEyebrow")}
+        </Text>
+        <Text style={[typography.statValue, styles.resultValue]}>
+          {quizCore.successRate}%
+        </Text>
+        <Text style={[typography.body, styles.resultBody]}>
+          {tQuiz("quizCompleted")}
+        </Text>
       </View>
     );
   }
 
   return (
-    <View>
+    <View style={styles.container}>
       {currentQuestion ? (
         <>
           <FirewallDefenderView
@@ -165,7 +169,6 @@ export function FirewallDefenderQuizScreen({
             firewallGamePaused={quizFirewall.firewallGamePaused}
             firewallGameRunning={quizFirewall.firewallGameRunning}
             firewallInventory={firewallInventory}
-            // New props for improvements
             firewallCombo={quizFirewall.firewallCombo}
             firewallComboMultiplier={quizFirewall.firewallComboMultiplier}
             firewallActiveEffect={quizFirewall.firewallActiveEffect}
@@ -173,7 +176,6 @@ export function FirewallDefenderQuizScreen({
             showPirate={showPirate}
           />
 
-          {/* Game Over Results Modal */}
           <FirewallResultsView
             isVisible={
               quizFirewall.firewallGameLives <= 0 &&
@@ -193,91 +195,45 @@ export function FirewallDefenderQuizScreen({
           />
         </>
       ) : (
-        <Text>{tQuiz("noQuestion")}</Text>
+        <Text style={[typography.body, styles.noQuestionText]}>
+          {tQuiz("noQuestion")}
+        </Text>
       )}
     </View>
   );
 }
 
-function createStyles(
-  colors: AppThemeColors,
-  typography: {
-    eyebrow: {
-      color: string;
-      fontSize: number;
-      fontWeight: "700";
-      letterSpacing: number;
-      textTransform: "uppercase";
-    };
-    eyebrowWarning: {
-      color: string;
-      fontSize: number;
-      fontWeight: "700";
-      letterSpacing: number;
-      textTransform: "uppercase";
-    };
-    screenTitle: {
-      color: string;
-      fontSize: number;
-      fontWeight: "900";
-      lineHeight: number;
-      letterSpacing: number;
-    };
-    heroTitle: {
-      color: string;
-      fontSize: number;
-      fontWeight: "900";
-      lineHeight: number;
-      letterSpacing: number;
-    };
-    body: { color: string; fontSize: number; lineHeight: number };
-    sectionTitle: {
-      color: string;
-      fontSize: number;
-      fontWeight: "800";
-      lineHeight: number;
-      letterSpacing: number;
-    };
-    statValue: {
-      color: string;
-      fontSize: number;
-      fontWeight: "900";
-      letterSpacing: number;
-    };
-    statLabel: {
-      color: string;
-      fontSize: number;
-      fontWeight: "700";
-      letterSpacing: number;
-      textTransform: "uppercase";
-    };
-    cardCode: {
-      color: string;
-      fontSize: number;
-      fontWeight: "700";
-      letterSpacing: number;
-      textTransform: "uppercase";
-    };
-    cardTitle: {
-      color: string;
-      fontSize: number;
-      fontWeight: "800";
-      lineHeight: number;
-    };
-    cardMeta: {
-      color: string;
-      fontSize: number;
-      fontWeight: "500";
-      lineHeight: number;
-    };
-    progressLabel: {
-      color: string;
-      fontSize: number;
-      fontWeight: "700";
-      letterSpacing: number;
-      textTransform: "uppercase";
-    };
-  },
-): any {
-  throw new Error("Function not implemented.");
-}
+const createStyles = (
+  colors: ReturnType<typeof useAppTheme>["colors"],
+  typography: ReturnType<typeof useAppTheme>["typography"],
+) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    resultsContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      padding: moderateScale(20),
+      backgroundColor: colors.background,
+    },
+    resultEyebrow: {
+      marginBottom: verticalScale(8),
+    },
+    resultValue: {
+      fontSize: normalizeFont(40),
+      color: colors.accent,
+      marginBottom: verticalScale(8),
+    },
+    resultBody: {
+      textAlign: "center",
+      color: colors.textMuted,
+    },
+    noQuestionText: {
+      textAlign: "center",
+      color: colors.error,
+      marginTop: verticalScale(20),
+    },
+  });

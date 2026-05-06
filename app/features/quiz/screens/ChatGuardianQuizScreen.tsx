@@ -1,4 +1,3 @@
-import { AppThemeColors } from "@/app/theme/palette";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -8,7 +7,7 @@ import {
   scale,
   verticalScale,
 } from "../../../lib/responsive";
-import { typography } from "../../../theme/typography";
+// use typography from the app theme
 import { useAppTheme } from "../../../theme/useAppTheme";
 import { ChatGuardianView } from "../components/ChatGuardianView";
 import {
@@ -45,7 +44,7 @@ export function ChatGuardianQuizScreen({
     [requestedQuizId, selectedDifficulty, t],
   );
 
-  const { colors } = useAppTheme();
+  const { colors, typography } = useAppTheme();
 
   const styles = useMemo(() => createStyles(colors), [colors]);
   // Use custom hooks for state management
@@ -181,7 +180,6 @@ export function ChatGuardianQuizScreen({
           onSelectOption={handleSelectOption}
           onNextQuestion={handleGoToNextQuestion}
           tQuiz={tQuiz}
-          styles={styles}
         />
       ) : (
         <Text style={styles.warningText}>{tQuiz("noQuestion")}</Text>
@@ -190,7 +188,7 @@ export function ChatGuardianQuizScreen({
   );
 }
 
-const createStyles = (colors: AppThemeColors) =>
+const createStyles = (colors: ReturnType<typeof useAppTheme>["colors"]) =>
   StyleSheet.create({
     questionCard: {
       borderRadius: scale(16),
@@ -202,7 +200,7 @@ const createStyles = (colors: AppThemeColors) =>
     },
     warningText: {
       marginTop: moderateScale(8),
-      color: "#ffb9b9",
+      color: colors.error,
       fontSize: normalizeFont(12),
       lineHeight: verticalScale(18),
     },
@@ -251,21 +249,21 @@ const createStyles = (colors: AppThemeColors) =>
       elevation: 3,
     },
     feedbackCardSuccess: {
-      borderColor: "#22c55e",
-      backgroundColor: "#166534",
+      borderColor: colors.quizItemCompletedBorder,
+      backgroundColor: colors.quizItemCompletedBg,
     },
     feedbackCardError: {
-      borderColor: "#ef4444",
-      backgroundColor: "#7f1d1d",
+      borderColor: colors.error,
+      backgroundColor: colors.surfaceSoft,
     },
     feedbackTitle: {
-      color: "#ffffff",
+      color: colors.text,
       fontSize: normalizeFont(13),
       fontWeight: "800",
       letterSpacing: moderateScale(0.2),
     },
     feedbackBody: {
-      color: "#e8f5e9",
+      color: colors.textMuted,
       fontSize: normalizeFont(13),
       lineHeight: verticalScale(19),
     },
@@ -278,6 +276,4 @@ const createStyles = (colors: AppThemeColors) =>
   });
 
 // Placeholder for local state to fix the error
-function setCurrentIndex(_index: number) {
-  // This will be handled via goToNextQuestion callback
-}
+function setCurrentIndex(_index: number) {}
