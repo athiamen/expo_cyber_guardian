@@ -1,5 +1,5 @@
-import { Audio } from 'expo-av';
-import type { QuizDifficulty } from '../data/quizCatalogData';
+import { Audio } from "expo-av";
+import type { QuizDifficulty } from "../data/quizCatalogData";
 
 export type FirewallDataItem = {
   key: string;
@@ -7,9 +7,12 @@ export type FirewallDataItem = {
   label: string;
 };
 
+export type FirewallPowerUpType = "shield" | "slowmo" | "magnet" | "lifeSteal";
+
 export type FirewallMovingObject = {
   id: number;
-  kind: 'data' | 'bad' | 'power';
+  kind: "data" | "bad" | "power";
+  powerUpType?: FirewallPowerUpType;
   icon: string;
   label: string;
   x: number;
@@ -26,42 +29,75 @@ export const FIREWALL_FALL_MULTIPLIER: Record<QuizDifficulty, number> = {
 
 export const FIREWALL_MAX_SHIELD = 100;
 export const FIREWALL_BAD_HIT_SHIELD_LOSS = 25;
+export const FIREWALL_COMBO_THRESHOLD = 5; // Objects needed for +1x combo
+export const FIREWALL_INITIAL_LIVES = 5;
+
+// Power-up effects
+export const FIREWALL_POWER_UP_EFFECTS: Record<
+  FirewallPowerUpType,
+  { duration: number; effect: string }
+> = {
+  shield: { duration: 8, effect: "+30 bouclier" },
+  slowmo: { duration: 4, effect: "-50% vitesse" },
+  magnet: { duration: 6, effect: "Aimant actif" },
+  lifeSteal: { duration: 0, effect: "+1 vie" },
+};
 
 export const FIREWALL_DATA_ITEMS: FirewallDataItem[] = [
-  { key: 'name', icon: '👶', label: 'Nom complet' },
-  { key: 'address', icon: '🏠', label: 'Adresse' },
-  { key: 'phone', icon: '📞', label: 'Téléphone' },
-  { key: 'email', icon: '✉️', label: 'Email' },
-  { key: 'shield', icon: '🛡️', label: 'Bouclier' },
-  { key: 'photo', icon: '📷', label: 'Photo' },
-  { key: 'school', icon: '🏫', label: 'École' },
-  { key: 'birth', icon: '🎂', label: 'Naissance' },
+  { key: "name", icon: "👶", label: "Nom complet" },
+  { key: "address", icon: "🏠", label: "Adresse" },
+  { key: "phone", icon: "📞", label: "Téléphone" },
+  { key: "email", icon: "✉️", label: "Email" },
+  { key: "shield", icon: "🛡️", label: "Bouclier" },
+  { key: "photo", icon: "📷", label: "Photo" },
+  { key: "school", icon: "🏫", label: "École" },
+  { key: "birth", icon: "🎂", label: "Naissance" },
 ];
 
-export const FIREWALL_FLOW_BY_QUESTION: Record<string, { dataKey: string; threatIcon: string; dataIcon: string }> = {
-  'Q6-1': { dataKey: 'name', threatIcon: '🦠', dataIcon: '👶' },
-  'Q6-2': { dataKey: 'address', threatIcon: '👾', dataIcon: '🏠' },
-  'Q6-3': { dataKey: 'phone', threatIcon: '🎣', dataIcon: '📞' },
-  'Q6-4': { dataKey: 'shield', threatIcon: '📨', dataIcon: '🛡️' },
-  'Q6-5': { dataKey: 'photo', threatIcon: '🕵️', dataIcon: '📷' },
-  'Q6-6': { dataKey: 'email', threatIcon: '🧨', dataIcon: '✉️' },
-  'Q6-7': { dataKey: 'school', threatIcon: '🕳️', dataIcon: '🏫' },
-  'Q6-8': { dataKey: 'birth', threatIcon: '⏳', dataIcon: '🎂' },
+export const FIREWALL_FLOW_BY_QUESTION: Record<
+  string,
+  { dataKey: string; threatIcon: string; dataIcon: string }
+> = {
+  "Q6-1": { dataKey: "name", threatIcon: "🦠", dataIcon: "👶" },
+  "Q6-2": { dataKey: "address", threatIcon: "👾", dataIcon: "🏠" },
+  "Q6-3": { dataKey: "phone", threatIcon: "🎣", dataIcon: "📞" },
+  "Q6-4": { dataKey: "shield", threatIcon: "📨", dataIcon: "🛡️" },
+  "Q6-5": { dataKey: "photo", threatIcon: "🕵️", dataIcon: "📷" },
+  "Q6-6": { dataKey: "email", threatIcon: "🧨", dataIcon: "✉️" },
+  "Q6-7": { dataKey: "school", threatIcon: "🕳️", dataIcon: "🏫" },
+  "Q6-8": { dataKey: "birth", threatIcon: "⏳", dataIcon: "🎂" },
 };
 
 export const FIREWALL_LEVEL_LABELS: Record<QuizDifficulty, string> = {
-  easy: 'Débutant',
-  medium: 'Intermédiaire',
-  hard: 'Expert',
+  easy: "Débutant",
+  medium: "Intermédiaire",
+  hard: "Expert",
 };
 
-const FIREWALL_DATA_ICONS = ['👶', '🏠', '📞', '✉️', '🛡️', '📷', '🏫', '🎂'] as const;
-const FIREWALL_POWER_ICONS = ['🛡️', '🔢', '🐢', '🧲', '❤️'] as const;
-const FIREWALL_BAD_ICONS = ['🦠', '🎣', '📨', '👾', '💣'] as const;
+const FIREWALL_DATA_ICONS = [
+  "👶",
+  "🏠",
+  "📞",
+  "✉️",
+  "🛡️",
+  "📷",
+  "🏫",
+  "🎂",
+] as const;
+const FIREWALL_POWER_ICONS = ["🛡️", "�", "🧲", "❤️"] as const;
+const FIREWALL_BAD_ICONS = ["🦠", "🎣", "📨", "👾", "💣"] as const;
+
+const FIREWALL_POWER_UP_TYPES: FirewallPowerUpType[] = [
+  "shield",
+  "slowmo",
+  "magnet",
+  "lifeSteal",
+];
 
 function encodeBase64(bytes: Uint8Array) {
-  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-  let output = '';
+  const alphabet =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  let output = "";
 
   for (let index = 0; index < bytes.length; index += 3) {
     const first = bytes[index];
@@ -71,14 +107,18 @@ function encodeBase64(bytes: Uint8Array) {
 
     output += alphabet[(triplet >> 18) & 63];
     output += alphabet[(triplet >> 12) & 63];
-    output += index + 1 < bytes.length ? alphabet[(triplet >> 6) & 63] : '=';
-    output += index + 2 < bytes.length ? alphabet[triplet & 63] : '=';
+    output += index + 1 < bytes.length ? alphabet[(triplet >> 6) & 63] : "=";
+    output += index + 2 < bytes.length ? alphabet[triplet & 63] : "=";
   }
 
   return output;
 }
 
-function createToneDataUri(frequency: number, durationSeconds: number, volume: number) {
+function createToneDataUri(
+  frequency: number,
+  durationSeconds: number,
+  volume: number,
+) {
   const sampleRate = 22050;
   const sampleCount = Math.max(1, Math.round(sampleRate * durationSeconds));
   const dataSize = sampleCount;
@@ -91,10 +131,10 @@ function createToneDataUri(frequency: number, durationSeconds: number, volume: n
     }
   };
 
-  writeString(0, 'RIFF');
+  writeString(0, "RIFF");
   view.setUint32(4, 36 + dataSize, true);
-  writeString(8, 'WAVE');
-  writeString(12, 'fmt ');
+  writeString(8, "WAVE");
+  writeString(12, "fmt ");
   view.setUint32(16, 16, true);
   view.setUint16(20, 1, true);
   view.setUint16(22, 1, true);
@@ -102,14 +142,20 @@ function createToneDataUri(frequency: number, durationSeconds: number, volume: n
   view.setUint32(28, sampleRate, true);
   view.setUint16(32, 1, true);
   view.setUint16(34, 8, true);
-  writeString(36, 'data');
+  writeString(36, "data");
   view.setUint32(40, dataSize, true);
 
   for (let sampleIndex = 0; sampleIndex < sampleCount; sampleIndex += 1) {
     const time = sampleIndex / sampleRate;
-    const envelope = Math.min(1, sampleIndex / 120) * Math.max(0, 1 - sampleIndex / sampleCount);
-    const sample = Math.sin(2 * Math.PI * frequency * time) * 127 * volume * envelope;
-    bytes[44 + sampleIndex] = Math.max(0, Math.min(255, Math.round(128 + sample)));
+    const envelope =
+      Math.min(1, sampleIndex / 120) *
+      Math.max(0, 1 - sampleIndex / sampleCount);
+    const sample =
+      Math.sin(2 * Math.PI * frequency * time) * 127 * volume * envelope;
+    bytes[44 + sampleIndex] = Math.max(
+      0,
+      Math.min(255, Math.round(128 + sample)),
+    );
   }
 
   return `data:audio/wav;base64,${encodeBase64(bytes)}`;
@@ -119,49 +165,77 @@ const FIREWALL_SOUND_URIS = {
   data: createToneDataUri(880, 0.08, 0.26),
   power: createToneDataUri(660, 0.1, 0.24),
   bad: createToneDataUri(180, 0.14, 0.32),
+  combo: createToneDataUri(1200, 0.06, 0.3),
 } as const;
 
 function pickRandom<T>(items: readonly T[]): T {
   const fallback = items[0];
   if (fallback === undefined) {
-    throw new Error('pickRandom requires a non-empty array');
+    throw new Error("pickRandom requires a non-empty array");
   }
 
   return items[Math.floor(Math.random() * items.length)] ?? fallback;
 }
 
-export function pickRandomFirewallKind(): FirewallMovingObject['kind'] {
+export function pickRandomFirewallKind(): FirewallMovingObject["kind"] {
   const roll = Math.random();
   if (roll < 0.5) {
-    return 'data';
+    return "data";
   }
 
   if (roll < 0.8) {
-    return 'bad';
+    return "bad";
   }
 
-  return 'power';
+  return "power";
 }
 
-export function buildRandomFirewallVisuals(kind: FirewallMovingObject['kind']) {
-  if (kind === 'data') {
-    return { icon: pickRandom(FIREWALL_DATA_ICONS), label: 'Donnée' };
+export function buildRandomFirewallVisuals(
+  kind: FirewallMovingObject["kind"],
+): { icon: string; label: string; powerUpType?: FirewallPowerUpType } {
+  if (kind === "data") {
+    return { icon: pickRandom(FIREWALL_DATA_ICONS), label: "Donnée" };
   }
 
-  if (kind === 'bad') {
-    return { icon: pickRandom(FIREWALL_BAD_ICONS), label: 'Menace' };
+  if (kind === "bad") {
+    return { icon: pickRandom(FIREWALL_BAD_ICONS), label: "Menace" };
   }
 
-  return { icon: pickRandom(FIREWALL_POWER_ICONS), label: 'Power-up' };
+  // Power-up with varied types
+  const powerUpType = pickRandom(FIREWALL_POWER_UP_TYPES);
+  const powerUpIcons: Record<FirewallPowerUpType, string> = {
+    shield: "🛡️",
+    slowmo: "🐢",
+    magnet: "🧲",
+    lifeSteal: "❤️",
+  };
+  const powerUpLabels: Record<FirewallPowerUpType, string> = {
+    shield: "Bouclier Boost",
+    slowmo: "Ralenti",
+    magnet: "Aimant",
+    lifeSteal: "Vol de Vie",
+  };
+
+  return {
+    icon: powerUpIcons[powerUpType],
+    label: powerUpLabels[powerUpType],
+    powerUpType,
+  };
 }
 
-export function createFirewallObjects(width: number, height: number, difficulty: QuizDifficulty): FirewallMovingObject[] {
+export function createFirewallObjects(
+  width: number,
+  height: number,
+  difficulty: QuizDifficulty,
+): FirewallMovingObject[] {
   const safeWidth = Math.max(width, 320);
   const safeHeight = Math.max(height, 260);
   const lanes = [0.15, 0.35, 0.58, 0.78];
   const count = 6;
-  const speedBase = difficulty === 'easy' ? 48 : difficulty === 'medium' ? 64 : 82;
-  const driftMultiplier = difficulty === 'easy' ? 1 : difficulty === 'medium' ? 1.08 : 1.16;
+  const speedBase =
+    difficulty === "easy" ? 48 : difficulty === "medium" ? 64 : 82;
+  const driftMultiplier =
+    difficulty === "easy" ? 1 : difficulty === "medium" ? 1.08 : 1.16;
 
   return Array.from({ length: count }, (_, index) => {
     const kind = pickRandomFirewallKind();
@@ -169,7 +243,10 @@ export function createFirewallObjects(width: number, height: number, difficulty:
     const laneX = safeWidth * pickRandom(lanes);
     const jitter = (Math.random() - 0.5) * 32;
     const speed = speedBase + Math.random() * 36;
-    const drift = (Math.random() < 0.5 ? -1 : 1) * (10 + Math.random() * 16) * driftMultiplier;
+    const drift =
+      (Math.random() < 0.5 ? -1 : 1) *
+      (10 + Math.random() * 16) *
+      driftMultiplier;
 
     return {
       id: index + 1,
@@ -188,11 +265,13 @@ export function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
-export async function playFirewallCollisionSound(kind: 'data' | 'bad' | 'power') {
+export async function playFirewallCollisionSound(
+  kind: "data" | "bad" | "power" | "combo",
+) {
   try {
     const { sound } = await Audio.Sound.createAsync(
       { uri: FIREWALL_SOUND_URIS[kind] },
-      { shouldPlay: true, volume: 1 }
+      { shouldPlay: true, volume: 0.7 },
     );
 
     sound.setOnPlaybackStatusUpdate((status) => {

@@ -105,9 +105,7 @@ export function QuizScreen({ token, userId }: QuizScreenProps) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Pressable style={styles.backButton} onPress={() => router.back()}>
-        <Text style={styles.backButtonText}>{t("course.previous")}</Text>
-      </Pressable>
+      {/* Back button removed at quiz start */}
 
       <View style={styles.heroCard}>
         <View style={styles.heroTextWrap}>
@@ -168,6 +166,7 @@ export function QuizScreen({ token, userId }: QuizScreenProps) {
         />
       ) : isFirewallDefenderGame ? (
         <FirewallDefenderQuizScreen
+          onGameEnd={() => router.back()}
           userId={userId}
           requestedQuizId={requestedQuizId}
           selectedDifficulty={selectedDifficulty}

@@ -1,25 +1,29 @@
 import { QUIZ_CATALOG_BY_ID } from "../features/quiz/data/quizCatalogData";
 import { auth } from "./firebase";
 import {
-    getCoursesByModule,
-    getCourseByCode as getFirebaseCourseByCode,
-    getModules as getFirebaseModules,
-    getProfileMe as getFirebaseProfileMe,
-    getQuizByCode as getFirebaseQuizByCode,
-    getQuizAttempts,
-    getQuizzesByModule,
-    markQuizCompleted as markFirebaseQuizCompleted,
-    saveQuizAttempt,
-    updateProfileMe as updateFirebaseProfileMe,
+  getCoursesByModule,
+  getCourseByCode as getFirebaseCourseByCode,
+  getModules as getFirebaseModules,
+  getProfileMe as getFirebaseProfileMe,
+  getQuizByCode as getFirebaseQuizByCode,
+  getQuizAttempts,
+  getQuizzesByModule,
+  markQuizCompleted as markFirebaseQuizCompleted,
+  saveQuizAttempt,
+  updateProfileMe as updateFirebaseProfileMe,
 } from "./firebaseApi";
 import {
-    getCurrentUser,
-    loginWithEmail,
-    registerWithEmail,
+  getCurrentUser,
+  loginWithEmail,
+  registerWithEmail,
 } from "./firebaseAuth";
 import { markQuizCompleted as markLocalQuizCompleted } from "./learningProgress";
 
 const API_BASE_URL = "firebase://firestore";
+
+// Simple in-memory caches to avoid repeated network calls during navigation
+let modulesCache: any[] | null = null;
+const quizCache: Map<string, QuizItem> = new Map();
 
 export type AuthUser = {
   id: string;
@@ -285,7 +289,7 @@ export async function getModules(): Promise<ModuleItem[]> {
 
 export async function getCourseByCode(courseCode: string): Promise<CourseItem> {
   const course = (await getFirebaseCourseByCode(courseCode)) as any;
-  const modules = await getFirebaseModules();
+  const modules = modulesCache ?? (modulesCache = await getFirebaseModules());
   const moduleCode = ensureString(course.moduleCode);
 
   const moduleItem = modules.find(
@@ -310,8 +314,13 @@ export async function getCourseByCode(courseCode: string): Promise<CourseItem> {
 }
 
 export async function getQuizByCode(quizCode: string): Promise<QuizItem> {
+  // Return cached quiz if available
+  if (quizCache.has(quizCode)) {
+    return quizCache.get(quizCode)!;
+  }
+
   const quiz = (await getFirebaseQuizByCode(quizCode)) as any;
-  const modules = await getFirebaseModules();
+  const modules = modulesCache ?? (modulesCache = await getFirebaseModules());
   const moduleCode = ensureString(quiz.moduleCode);
 
   const moduleItem = modules.find(
@@ -326,7 +335,7 @@ export async function getQuizByCode(quizCode: string): Promise<QuizItem> {
     correctIdx: ensureNumber(question.correctIdx ?? question.correctIndex, 0),
   }));
 
-  return {
+  const result: QuizItem = {
     id: ensureString(quiz.code, quizCode),
     code: ensureString(quiz.code, quizCode),
     title: ensureString(quiz.title, quizCode),
@@ -338,6 +347,9 @@ export async function getQuizByCode(quizCode: string): Promise<QuizItem> {
     },
     questions,
   };
+
+  quizCache.set(quizCode, result);
+  return result;
 }
 
 export async function submitQuizAnswers(

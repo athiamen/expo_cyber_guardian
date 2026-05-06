@@ -4,7 +4,9 @@ import type { QuizDifficulty } from "../data/quizCatalogData";
 import {
   FIREWALL_LEVEL_LABELS,
   type FirewallMovingObject,
+  type FirewallPowerUpType,
 } from "../firewall/firewallGame";
+import type { FirewallGameStats } from "../hooks/useFirewallAnimationLoop";
 import { firewallStyles } from "./FirewallDefenderStyles";
 
 type FirewallInventoryItem = {
@@ -45,6 +47,15 @@ type FirewallDefenderViewProps = {
   firewallGamePaused: boolean;
   firewallGameRunning: boolean;
   firewallInventory: FirewallInventoryItem[];
+  // New props for improvements
+  firewallCombo?: number;
+  firewallComboMultiplier?: number;
+  firewallActiveEffect?: {
+    type: FirewallPowerUpType;
+    remainingTime: number;
+  } | null;
+  firewallGameStats?: FirewallGameStats;
+  showPirate?: boolean;
 };
 
 export function FirewallDefenderView({
@@ -63,14 +74,17 @@ export function FirewallDefenderView({
   firewallPirateZone,
   firewallObjects,
   firewallChestLeft,
-  firewallTouchpadVisible,
   onMoveFirewallChest,
   onStartFirewallGame,
   onToggleFirewallPause,
   onResetFirewallGame,
   firewallGamePaused,
   firewallGameRunning,
-  firewallInventory,
+  firewallCombo = 0,
+  firewallComboMultiplier = 1,
+  firewallActiveEffect = null,
+  firewallGameStats,
+  showPirate = true,
 }: FirewallDefenderViewProps) {
   return (
     <View
@@ -182,6 +196,52 @@ export function FirewallDefenderView({
         >
           <View style={firewallStyles.firewallArenaGlow} />
 
+          {/* Combo display */}
+          {firewallCombo > 0 && firewallGameRunning && (
+            <View style={firewallStyles.firewallComboDisplay}>
+              <Text
+                selectable={false}
+                style={firewallStyles.firewallComboNumber}
+              >
+                {firewallCombo}
+              </Text>
+              <Text
+                selectable={false}
+                style={firewallStyles.firewallComboLabel}
+              >
+                Combo!
+              </Text>
+              {firewallComboMultiplier > 1 && (
+                <Text
+                  selectable={false}
+                  style={firewallStyles.firewallMultiplierBadge}
+                >
+                  x{firewallComboMultiplier.toFixed(1)}
+                </Text>
+              )}
+            </View>
+          )}
+
+          {/* Active effect display */}
+          {firewallActiveEffect && firewallGameRunning && (
+            <View style={firewallStyles.firewallActiveEffectBox}>
+              <Text
+                selectable={false}
+                style={firewallStyles.firewallEffectLabel}
+              >
+                {firewallActiveEffect.type === "slowmo" && "🐢 Ralenti"}
+                {firewallActiveEffect.type === "magnet" && "🧲 Aimant"}
+                {firewallActiveEffect.type === "shield" && "🛡️ Protégé"}
+              </Text>
+              <Text
+                selectable={false}
+                style={firewallStyles.firewallEffectTime}
+              >
+                {firewallActiveEffect.remainingTime}s
+              </Text>
+            </View>
+          )}
+
           {firewallStars.map((star) => (
             <View
               key={star.id}
@@ -198,24 +258,34 @@ export function FirewallDefenderView({
             />
           ))}
 
-          <View
-            style={[
-              firewallStyles.firewallPirateCard,
-              {
-                left: firewallPirateZone.x,
-                top: firewallPirateZone.y,
-                width: firewallPirateZone.w,
-                minHeight: firewallPirateZone.h,
-              },
-            ]}
-          >
-            <Text selectable={false} style={firewallStyles.firewallPirateTitle}>
-              👾 Pirate
-            </Text>
-            <Text selectable={false} style={firewallStyles.firewallPirateText}>
-              Récupère les données qui tombent ici !
-            </Text>
-          </View>
+          {/* Pirate Zone - Hidden after 5 seconds */}
+          {showPirate && (
+            <View
+              style={[
+                firewallStyles.firewallPirateCard,
+                {
+                  left: firewallPirateZone.x,
+                  top: firewallPirateZone.y,
+                  width: firewallPirateZone.w,
+                  minHeight: firewallPirateZone.h,
+                  opacity: 1,
+                },
+              ]}
+            >
+              <Text
+                selectable={false}
+                style={firewallStyles.firewallPirateTitle}
+              >
+                👾 Pirate
+              </Text>
+              <Text
+                selectable={false}
+                style={firewallStyles.firewallPirateText}
+              >
+                Récupère les données qui tombent ici !
+              </Text>
+            </View>
+          )}
 
           <View style={firewallStyles.firewallSafeMarker} />
 
@@ -257,6 +327,73 @@ export function FirewallDefenderView({
               Déplace-moi
             </Text>
           </View>
+
+          {/* Pause overlay */}
+          {firewallGamePaused && (
+            <View style={firewallStyles.firewallPauseOverlay}>
+              <View style={firewallStyles.firewallPauseModal}>
+                <Text
+                  selectable={false}
+                  style={firewallStyles.firewallPauseTitle}
+                >
+                  ⏸ Pause
+                </Text>
+                <Text
+                  selectable={false}
+                  style={firewallStyles.firewallPauseSubtitle}
+                >
+                  Jeu en attente
+                </Text>
+                {firewallGameStats && (
+                  <View style={{ gap: 8, width: "100%", alignItems: "center" }}>
+                    <View style={firewallStyles.firewallStatRow}>
+                      <Text
+                        selectable={false}
+                        style={firewallStyles.firewallStatLabel}
+                      >
+                        Score:
+                      </Text>
+                      <Text
+                        selectable={false}
+                        style={firewallStyles.firewallStatValue}
+                      >
+                        {firewallScoreLabel}
+                      </Text>
+                    </View>
+                    <View style={firewallStyles.firewallStatRow}>
+                      <Text
+                        selectable={false}
+                        style={firewallStyles.firewallStatLabel}
+                      >
+                        Accuracy:
+                      </Text>
+                      <Text
+                        selectable={false}
+                        style={firewallStyles.firewallStatValue}
+                      >
+                        {firewallGameStats.accuracy}%
+                      </Text>
+                    </View>
+                  </View>
+                )}
+                <Pressable
+                  style={[
+                    firewallStyles.firewallControlButton,
+                    firewallStyles.firewallControlPrimary,
+                    { marginTop: 12, paddingHorizontal: 32 },
+                  ]}
+                  onPress={onToggleFirewallPause}
+                >
+                  <Text
+                    selectable={false}
+                    style={firewallStyles.firewallControlTextPrimary}
+                  >
+                    ▶ Reprendre
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          )}
         </View>
       </View>
     </View>
